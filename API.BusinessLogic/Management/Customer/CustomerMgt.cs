@@ -93,7 +93,6 @@ namespace API.BusinessLogic.Management.Customer
             }
             return customer;
         }
-
         public async Task<object?> DeleteCustomer(string param)
         {
             objCustomer = new GenericFactory<vmCustomer>(); objCustomerMySQL = new GenericFactoryMySql<vmCustomer>(); string message = string.Empty; bool resstate = false;
@@ -134,7 +133,6 @@ namespace API.BusinessLogic.Management.Customer
             }
             return new { message, resstate };
         }
-
         public async Task<object?> CreateCustomer(vmCustomer objCtomer)
         {
             objCustomer = new GenericFactory<vmCustomer>(); objCustomerMySQL = new GenericFactoryMySql<vmCustomer>();
