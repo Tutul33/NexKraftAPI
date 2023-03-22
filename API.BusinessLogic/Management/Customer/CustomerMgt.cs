@@ -28,7 +28,7 @@ namespace API.BusinessLogic.Management.Customer
 
             objCustomer = new GenericFactory<vmCustomer>();
             objCustomerMySQL = new GenericFactoryMySql<vmCustomer>();
-            List<vmCustomer>? listCustomer = new List<vmCustomer>();
+            List<vmCustomer?>? listCustomer = new List<vmCustomer?>();
             try
             {
                 if (StaticInfos.IsMsSQL)
@@ -38,7 +38,7 @@ namespace API.BusinessLogic.Management.Customer
                             { "PageIndex", cmnParam.PageNumber },
                             { "PageSize", cmnParam.PageSize}
                          };
-                    listCustomer = await objCustomer.ExecuteCommandList("[dbo].[SP_GetCustomersPageWise]", ht, StaticInfos.MsSqlConnectionString);
+                    listCustomer = await objCustomer.ExecuteCommandList(StoreProcedureMSSQL.SP_GetCustomersPageWise, ht, StaticInfos.MsSqlConnectionString);
 
                 }
                 else
@@ -48,7 +48,7 @@ namespace API.BusinessLogic.Management.Customer
                            { "PageIndex", cmnParam.PageNumber },
                            { "PageSize", cmnParam.PageSize}
                         };
-                    listCustomer = await objCustomerMySQL.ExecuteCommandList("SP_GetCustomersPageWise", ht, StaticInfos.MySqlConnectionString);
+                    listCustomer = await objCustomerMySQL.ExecuteCommandList(StoreProcedureMYSQL.SP_GetCustomersPageWise, ht, StaticInfos.MySqlConnectionString);
                 }
 
             }
@@ -75,7 +75,7 @@ namespace API.BusinessLogic.Management.Customer
                           {
                              { "CustomerID", cmnParam.Id}
                           };
-                    customer = await objCustomer.ExecuteCommandSingle("SP_GetCustomerByCustomerID", ht, StaticInfos.MsSqlConnectionString);
+                    customer = await objCustomer.ExecuteCommandSingle(StoreProcedureMSSQL.SP_GetCustomerByCustomerID, ht, StaticInfos.MsSqlConnectionString);
                 }
                 else
                 {
@@ -83,7 +83,7 @@ namespace API.BusinessLogic.Management.Customer
                           {
                              { "C_CustomerID", cmnParam.Id}
                           };
-                    customer = await objCustomerMySQL.ExecuteCommandSingle("SP_GetCustomerByCustomerID", ht, StaticInfos.MySqlConnectionString);
+                    customer = await objCustomerMySQL.ExecuteCommandSingle(StoreProcedureMYSQL.SP_GetCustomerByCustomerID, ht, StaticInfos.MySqlConnectionString);
                 }
 
             }
@@ -107,7 +107,7 @@ namespace API.BusinessLogic.Management.Customer
                          {
                             { "CustomerID", cmnParam.Id}
                          };
-                    response = await objCustomer.ExecuteCommand("SP_DeleteCustomer", ht, StaticInfos.MsSqlConnectionString);
+                    response = await objCustomer.ExecuteCommand(StoreProcedureMSSQL.SP_DeleteCustomer, ht, StaticInfos.MsSqlConnectionString);
                 }
                 else
                 {
@@ -115,7 +115,7 @@ namespace API.BusinessLogic.Management.Customer
                          {
                             { "C_CustomerID", cmnParam.Id}
                          };
-                    response = await objCustomerMySQL.ExecuteCommand("SP_DeleteCustomer", ht, StaticInfos.MySqlConnectionString);
+                    response = await objCustomerMySQL.ExecuteCommand(StoreProcedureMYSQL.SP_DeleteCustomer, ht, StaticInfos.MySqlConnectionString);
 
                 }
                 if (response > 0)
@@ -147,9 +147,9 @@ namespace API.BusinessLogic.Management.Customer
                     ht = new Hashtable
                      {
                       { "CustomerName", objCtomer?.CustomerName},
-                      { "Country ", objCtomer?.Country }
+                      { "Country", objCtomer?.Country }
                      };
-                     response = await objCustomer.ExecuteCommand("SP_CreateCustomer", ht, StaticInfos.MsSqlConnectionString);
+                     response = await objCustomer.ExecuteCommand(StoreProcedureMSSQL.SP_CreateCustomer, ht, StaticInfos.MsSqlConnectionString);
 
                 }
                 else
@@ -157,9 +157,9 @@ namespace API.BusinessLogic.Management.Customer
                     ht = new Hashtable
                      {
                       { "C_CustomerName", objCtomer?.CustomerName},
-                      { "C_Country ", objCtomer?.Country }
+                      { "C_Country", objCtomer?.Country }
                      };
-                    response = await objCustomerMySQL.ExecuteCommand("SP_CreateCustomer", ht, StaticInfos.MySqlConnectionString);
+                    response = await objCustomerMySQL.ExecuteCommand(StoreProcedureMYSQL.SP_CreateCustomer, ht, StaticInfos.MySqlConnectionString);
                 }
                
                 if (response > 0)
@@ -192,9 +192,9 @@ namespace API.BusinessLogic.Management.Customer
                         {
                            { "CustomerID", objCtomer?.CustomerID},
                            { "CustomerName", objCtomer?.CustomerName},
-                           { "Country ", objCtomer?.Country }                        
+                           { "Country", objCtomer?.Country }                        
                         };
-                    response = await objCustomer.ExecuteCommand("SP_UpdateCustomer", ht, StaticInfos.MsSqlConnectionString);
+                    response = await objCustomer.ExecuteCommand(StoreProcedureMSSQL.SP_UpdateCustomer, ht, StaticInfos.MsSqlConnectionString);
                 }
                 else
                 {
@@ -202,9 +202,9 @@ namespace API.BusinessLogic.Management.Customer
                         {
                            { "C_CustomerID", objCtomer?.CustomerID},
                            { "C_CustomerName", objCtomer?.CustomerName},
-                           { "C_Country ", objCtomer?.Country }
+                           { "C_Country", objCtomer?.Country }
                         };
-                    response = await objCustomerMySQL.ExecuteCommand("SP_UpdateCustomer", ht, StaticInfos.MySqlConnectionString);
+                    response = await objCustomerMySQL.ExecuteCommand(StoreProcedureMYSQL.SP_UpdateCustomer, ht, StaticInfos.MySqlConnectionString);
                 }
                 
                 

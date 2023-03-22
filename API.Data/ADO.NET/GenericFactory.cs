@@ -114,11 +114,11 @@ namespace API.Data.ADO.NET
             });
         }
 
-        public Task<List<T>?> ExecuteCommandList(string spQuery, Hashtable ht, string conString)
+        public Task<List<T?>?> ExecuteCommandList(string spQuery, Hashtable ht, string conString)
         {
             return Task.Run(() =>
             {
-                List<T>? Results = null;
+                List<T?>? Results = null;
                 try
                 {
                     using (SqlConnection con = new SqlConnection(StaticInfos.MsSqlConnectionString))
