@@ -2,6 +2,7 @@
 using API.BusinessLogic.Management.Customer;
 using API.Data.ViewModels.Common;
 using API.Data.ViewModels.Customers;
+using API.Filters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -64,7 +65,7 @@ namespace API.Controllers
         /// <param name="data"></param>
         /// <returns></returns>
         [HttpPost("[action]")]
-        public async Task<object?> CreateCustomer([FromBody] object data)
+        public async Task<object?> CreateCustomer([FromBody] vmCustomer data)
         {
             object? resdata = null;
             try
@@ -85,13 +86,12 @@ namespace API.Controllers
         /// <param name="data"></param>
         /// <returns></returns>
         [HttpPut("[action]")]
-        public async Task<object?> UpdateCustomer([FromBody] object data)
+        public async Task<object?> UpdateCustomer([FromBody] vmCustomerUpdate data)
         {
             object? resdata = null;
             try
             {
                 resdata = await mgt.UpdateCustomer(data);
-
             }
             catch (Exception ex)
             {

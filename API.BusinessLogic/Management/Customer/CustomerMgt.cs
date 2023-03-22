@@ -28,7 +28,7 @@ namespace API.BusinessLogic.Management.Customer
 
             objCustomer = new GenericFactory<vmCustomer>();
             objCustomerMySQL = new GenericFactoryMySql<vmCustomer>();
-            List<vmCustomer>? listCustomer = new List<vmCustomer>();
+            List<vmCustomer?>? listCustomer = new List<vmCustomer?>();
             try
             {
                 if (StaticInfos.IsMsSQL)
@@ -135,13 +135,13 @@ namespace API.BusinessLogic.Management.Customer
             return new { message, resstate };
         }
 
-        public async Task<object?> CreateCustomer(object param)
+        public async Task<object?> CreateCustomer(vmCustomer objCtomer)
         {
             objCustomer = new GenericFactory<vmCustomer>(); objCustomerMySQL = new GenericFactoryMySql<vmCustomer>();
             string message = string.Empty; bool resstate = false;int response = 0;
             try
             {
-                vmCustomer? objCtomer = JsonConvert.DeserializeObject<vmCustomer?>(param.ToString());
+                //vmCustomer? objCtomer = JsonConvert.DeserializeObject<vmCustomer?>(param.ToString());
                 if (StaticInfos.IsMsSQL)
                 {
                     ht = new Hashtable
@@ -178,13 +178,14 @@ namespace API.BusinessLogic.Management.Customer
             }
             return new { message, resstate };
         }
-        public async Task<object?> UpdateCustomer(object data)
+        public async Task<object?> UpdateCustomer(vmCustomerUpdate? objCtomer)
         {
             objCustomer = new GenericFactory<vmCustomer>(); objCustomerMySQL = new GenericFactoryMySql<vmCustomer>();
             string message = string.Empty; bool resstate = false;
             try
             {
-                vmCustomer? objCtomer = JsonConvert.DeserializeObject<vmCustomer?>(data.ToString());int response = 0;
+                //vmCustomer? objCtomer = JsonConvert.DeserializeObject<vmCustomer?>(data.ToString());
+                int response = 0;
 
                 if (StaticInfos.IsMsSQL)
                 {

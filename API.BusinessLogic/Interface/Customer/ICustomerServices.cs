@@ -12,7 +12,7 @@ namespace API.BusinessLogic.Interface.Customer
         Task<object?> DeleteCustomer(string param);
         Task<vmCustomer?> GetCustomerByCustomerID(string param);
         Task<object?> GetCustomerList(string param);
-        Task<object?> CreateCustomer(object data);
-        Task<object?> UpdateCustomer(object data);
+        Task<object?> CreateCustomer(vmCustomer data);
+        Task<object?> UpdateCustomer(vmCustomerUpdate data);
     }
 }
