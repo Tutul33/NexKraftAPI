@@ -147,7 +147,7 @@ namespace API.BusinessLogic.Management.Customer
                     ht = new Hashtable
                      {
                       { "CustomerName", objCtomer?.CustomerName},
-                      { "Country ", objCtomer?.Country }
+                      { "Country", objCtomer?.Country }
                      };
                      response = await objCustomer.ExecuteCommand("SP_CreateCustomer", ht, StaticInfos.MsSqlConnectionString);
 
@@ -157,7 +157,7 @@ namespace API.BusinessLogic.Management.Customer
                     ht = new Hashtable
                      {
                       { "C_CustomerName", objCtomer?.CustomerName},
-                      { "C_Country ", objCtomer?.Country }
+                      { "C_Country", objCtomer?.Country }
                      };
                     response = await objCustomerMySQL.ExecuteCommand("SP_CreateCustomer", ht, StaticInfos.MySqlConnectionString);
                 }
@@ -192,7 +192,7 @@ namespace API.BusinessLogic.Management.Customer
                         {
                            { "CustomerID", objCtomer?.CustomerID},
                            { "CustomerName", objCtomer?.CustomerName},
-                           { "Country ", objCtomer?.Country }                        
+                           { "Country", objCtomer?.Country }                        
                         };
                     response = await objCustomer.ExecuteCommand("SP_UpdateCustomer", ht, StaticInfos.MsSqlConnectionString);
                 }
@@ -202,7 +202,7 @@ namespace API.BusinessLogic.Management.Customer
                         {
                            { "C_CustomerID", objCtomer?.CustomerID},
                            { "C_CustomerName", objCtomer?.CustomerName},
-                           { "C_Country ", objCtomer?.Country }
+                           { "C_Country", objCtomer?.Country }
                         };
                     response = await objCustomerMySQL.ExecuteCommand("SP_UpdateCustomer", ht, StaticInfos.MySqlConnectionString);
                 }
