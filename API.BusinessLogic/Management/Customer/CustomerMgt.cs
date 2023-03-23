@@ -19,7 +19,9 @@ namespace API.BusinessLogic.Management.Customer
 {
     public class CustomerMgt : ICustomerServices
     {
-        Hashtable? ht = null; GenericFactory<vmCustomer> objCustomer = null; GenericFactoryMySql<vmCustomer> objCustomerMySQL = null;
+        Hashtable? ht = null;
+        GenericFactory<vmCustomer>? objCustomer = null;
+        GenericFactoryMySql<vmCustomer>? objCustomerMySQL = null;
         public CustomerMgt() { }
         public async Task<object?> GetCustomerList(string param)
         {

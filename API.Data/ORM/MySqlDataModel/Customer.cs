@@ -10,4 +10,6 @@ public partial class Customer
     public string? CustomerName { get; set; }
 
     public string? Country { get; set; }
+
+    public virtual ICollection<Customerlogin> Customerlogins { get; } = new List<Customerlogin>();
 }

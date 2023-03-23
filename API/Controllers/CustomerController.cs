@@ -18,11 +18,7 @@ namespace API.Controllers
         {
             mgt = newMgt;
         }
-        /// <summary>
-        /// This operation will get customer list
-        /// </summary>
-        /// <param name="param"></param>
-        /// <returns></returns>
+        
         [HttpGet("[action]")]
         public async Task<object?> GetCustomerList([FromQuery] string param)
         {
@@ -40,11 +36,7 @@ namespace API.Controllers
                 data
             };
         }
-        /// <summary>
-        /// This operation will get customer by customerId from database
-        /// </summary>
-        /// <param name="param"></param>
-        /// <returns></returns>
+       
         [HttpGet("[action]")]
         public async Task<vmCustomer?> GetCustomerByCustomerID([FromQuery] string param)
         {
@@ -59,11 +51,7 @@ namespace API.Controllers
             }
             return data;
         }
-        /// <summary>
-        /// This operation will create customer data to database
-        /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
+       
         [HttpPost("[action]")]
         public async Task<object?> CreateCustomer([FromBody] vmCustomer data)
         {
@@ -80,11 +68,7 @@ namespace API.Controllers
             return resdata;
 
         }
-        /// <summary>
-        /// This operation will update customer data to database
-        /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
+        
         [HttpPut("[action]")]
         public async Task<object?> UpdateCustomer([FromBody] vmCustomerUpdate data)
         {
@@ -99,11 +83,7 @@ namespace API.Controllers
             }
             return resdata;
         }
-        /// <summary>
-        /// This operation will delete customer data from database
-        /// </summary>
-        /// <param name="param"></param>
-        /// <returns></returns>
+        
         [HttpDelete("[action]")]
         public async Task<object?> DeleteCustomer([FromQuery] string param)
         {
