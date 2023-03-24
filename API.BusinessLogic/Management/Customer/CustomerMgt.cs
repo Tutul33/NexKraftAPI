@@ -62,7 +62,7 @@ namespace API.BusinessLogic.Management.Customer
                            { "pageindex", cmnParam.PageNumber },
                            { "pagesize", cmnParam.PageSize}
                         };
-                    listCustomer = await objCustomerPostgreSQL.ExecuteCommandList("SP_GetCustomersPageWise", ht, StaticInfos.PostgreSqlConnectionString);
+                    listCustomer = await objCustomerPostgreSQL.ExecuteQueryList("fnc_getcustomerlist", ht, StaticInfos.PostgreSqlConnectionString);
                 }
 
             }

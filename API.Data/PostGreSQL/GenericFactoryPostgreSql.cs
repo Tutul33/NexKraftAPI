@@ -1,5 +1,6 @@
 ﻿using API.Data.MySQL;
 using API.Settings;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using Npgsql;
@@ -133,17 +134,30 @@ namespace API.Data.PostGreSQL
                     using (NpgsqlConnection con = new NpgsqlConnection(StaticInfos.PostgreSqlConnectionString))
                     {
                         con.Open();
-                        NpgsqlCommand cmd = new NpgsqlCommand();
-                        cmd.CommandText = spQuery;
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Connection = con;
-                        foreach (object obj in ht.Keys)
-                        {
-                            string str = Convert.ToString(obj);
-                            NpgsqlParameter parameter = new NpgsqlParameter("@" + str, ht[obj]);
-                            cmd.Parameters.Add(parameter);
-                        }
-                        Results = DataReaderMapToList<T?>(cmd.ExecuteReader());
+                        NpgsqlCommand cmd = new NpgsqlCommand("select * from fnc_getcustomerlist(0,0)", con);
+                        //cmd.CommandText = spQuery;
+                        //cmd.CommandType = CommandType.Text;
+                        //cmd.Connection = con;
+                        //foreach (object obj in ht.Keys)
+                        //{
+                        //    string str = Convert.ToString(obj);
+                        //    NpgsqlParameter parameter = new NpgsqlParameter("@" + str, ht[obj]);
+                        //    cmd.Parameters.Add(parameter);
+                        //}
+                        // Passing PostGre SQL Function Name
+                        //NpgsqlCommand cmd = new NpgsqlCommand(spQuery, con);
+                        //foreach (object obj in ht.Keys)
+                        //{
+                        //    string str = Convert.ToString(obj);
+                        //    //NpgsqlParameter parameter = new NpgsqlParameter(str, ht[obj]);
+                        //    NpgsqlParameter parameter = new NpgsqlParameter(str, DbType.Int32);
+                        //    //cmd.Parameters.Add(parameter);
+                        //    cmd.Parameters.AddWithValue(parameter).Value= ht[obj];
+                        //}
+                        //cmd.CommandType = CommandType.StoredProcedure;
+                        // Execute the query and obtain a result set
+                        NpgsqlDataReader readData = cmd.ExecuteReader();
+                        Results = DataReaderMapToLists<T?>(readData);
                         cmd.Parameters.Clear();
                     }
                 }
