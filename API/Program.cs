@@ -12,7 +12,10 @@ var configBuilder = new ConfigurationBuilder()
 IConfiguration _configuration = configBuilder.Build();
 StaticInfos.MsSqlConnectionString = _configuration.GetValue<string>("MsSqlConnectionString");
 StaticInfos.MySqlConnectionString = _configuration.GetValue<string>("MySqlConnectionString");
+StaticInfos.PostgreSqlConnectionString = _configuration.GetValue<string>("PostGreSqlConnectionString");
 StaticInfos.IsMsSQL = _configuration.GetValue<bool>("IsMsSQL");
+StaticInfos.IsMySQL = _configuration.GetValue<bool>("IsMySQL");
+StaticInfos.IsPostgreSQL = _configuration.GetValue<bool>("IsPostgreSQL");
 
 // Add services to the container.
 builder.Services.AddControllers();

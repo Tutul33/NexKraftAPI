@@ -14,12 +14,16 @@ using Newtonsoft.Json;
 using Azure;
 using System.Xml;
 using API.Data.MySQL;
+using API.Data.PostGreSQL;
 
 namespace API.BusinessLogic.Management.Customer
 {
     public class CustomerMgt : ICustomerServices
     {
-        Hashtable? ht = null; GenericFactory<vmCustomer> objCustomer = null; GenericFactoryMySql<vmCustomer> objCustomerMySQL = null;
+        Hashtable? ht = null; 
+        GenericFactory<vmCustomer>? objCustomer = null; 
+        GenericFactoryMySql<vmCustomer>? objCustomerMySQL = null;
+        GenericFactoryPostgreSql<vmCustomer>? objCustomerPostgreSQL = null;
         public CustomerMgt() { }
         public async Task<object?> GetCustomerList(string param)
         {
@@ -28,6 +32,7 @@ namespace API.BusinessLogic.Management.Customer
 
             objCustomer = new GenericFactory<vmCustomer>();
             objCustomerMySQL = new GenericFactoryMySql<vmCustomer>();
+            objCustomerPostgreSQL = new GenericFactoryPostgreSql<vmCustomer>();
             List<vmCustomer?>? listCustomer = new List<vmCustomer?>();
             try
             {
@@ -41,7 +46,7 @@ namespace API.BusinessLogic.Management.Customer
                     listCustomer = await objCustomer.ExecuteCommandList("[dbo].[SP_GetCustomersPageWise]", ht, StaticInfos.MsSqlConnectionString);
 
                 }
-                else
+                else if(StaticInfos.IsMySQL)
                 {
                     ht = new Hashtable
                         {
@@ -49,6 +54,15 @@ namespace API.BusinessLogic.Management.Customer
                            { "PageSize", cmnParam.PageSize}
                         };
                     listCustomer = await objCustomerMySQL.ExecuteCommandList("SP_GetCustomersPageWise", ht, StaticInfos.MySqlConnectionString);
+                }
+                else if (StaticInfos.IsPostgreSQL)
+                {
+                    ht = new Hashtable
+                        {
+                           { "pageindex", cmnParam.PageNumber },
+                           { "pagesize", cmnParam.PageSize}
+                        };
+                    listCustomer = await objCustomerPostgreSQL.ExecuteCommandList("SP_GetCustomersPageWise", ht, StaticInfos.PostgreSqlConnectionString);
                 }
 
             }
@@ -63,7 +77,9 @@ namespace API.BusinessLogic.Management.Customer
         }
         public async Task<vmCustomer?> GetCustomerByCustomerID(string param)
         {
-            objCustomer = new GenericFactory<vmCustomer>(); objCustomerMySQL = new GenericFactoryMySql<vmCustomer>();
+            objCustomer = new GenericFactory<vmCustomer>(); 
+            objCustomerMySQL = new GenericFactoryMySql<vmCustomer>();
+            objCustomerPostgreSQL = new GenericFactoryPostgreSql<vmCustomer>();
             vmCustomer? customer = new vmCustomer();
             try
             {
@@ -77,13 +93,22 @@ namespace API.BusinessLogic.Management.Customer
                           };
                     customer = await objCustomer.ExecuteCommandSingle("SP_GetCustomerByCustomerID", ht, StaticInfos.MsSqlConnectionString);
                 }
-                else
+                else if (StaticInfos.IsMySQL)
                 {
                     ht = new Hashtable
                           {
                              { "C_CustomerID", cmnParam.Id}
                           };
                     customer = await objCustomerMySQL.ExecuteCommandSingle("SP_GetCustomerByCustomerID", ht, StaticInfos.MySqlConnectionString);
+                }
+                else if(StaticInfos.IsPostgreSQL)
+                {
+                    ht = new Hashtable
+                          {
+                             { "C_CustomerID", cmnParam.Id}
+                          };
+                    customer = await objCustomerMySQL.ExecuteCommandSingle("SP_GetCustomerByCustomerID", ht, StaticInfos.PostgreSqlConnectionString);
+
                 }
 
             }
@@ -95,7 +120,10 @@ namespace API.BusinessLogic.Management.Customer
         }
         public async Task<object?> DeleteCustomer(string param)
         {
-            objCustomer = new GenericFactory<vmCustomer>(); objCustomerMySQL = new GenericFactoryMySql<vmCustomer>(); string message = string.Empty; bool resstate = false;
+            objCustomer = new GenericFactory<vmCustomer>(); 
+            objCustomerMySQL = new GenericFactoryMySql<vmCustomer>();
+            objCustomerPostgreSQL = new GenericFactoryPostgreSql<vmCustomer>();
+            string message = string.Empty; bool resstate = false;
             try
             {
                 CommonData cmnParam = new CommonData(); int response = 0;
@@ -108,13 +136,21 @@ namespace API.BusinessLogic.Management.Customer
                          };
                     response = await objCustomer.ExecuteCommand("SP_DeleteCustomer", ht, StaticInfos.MsSqlConnectionString);
                 }
-                else
+                else if(StaticInfos.IsMySQL)
                 {
                     ht = new Hashtable
                          {
                             { "C_CustomerID", cmnParam.Id}
                          };
                     response = await objCustomerMySQL.ExecuteCommand("SP_DeleteCustomer", ht, StaticInfos.MySqlConnectionString);
+
+                }else if(StaticInfos.IsPostgreSQL)
+                {
+                    ht = new Hashtable
+                         {
+                            { "C_CustomerID", cmnParam.Id}
+                         };
+                    response = await objCustomerPostgreSQL.ExecuteCommand("SP_DeleteCustomer", ht, StaticInfos.PostgreSqlConnectionString);
 
                 }
                 if (response > 0)
@@ -195,7 +231,7 @@ namespace API.BusinessLogic.Management.Customer
                         };
                     response = await objCustomer.ExecuteCommand("SP_UpdateCustomer", ht, StaticInfos.MsSqlConnectionString);
                 }
-                else
+                else if (StaticInfos.IsMsSQL) 
                 {
                     ht = new Hashtable
                         {
@@ -204,6 +240,15 @@ namespace API.BusinessLogic.Management.Customer
                            { "C_Country", objCtomer?.Country }
                         };
                     response = await objCustomerMySQL.ExecuteCommand("SP_UpdateCustomer", ht, StaticInfos.MySqlConnectionString);
+                }else if (StaticInfos.IsPostgreSQL) 
+                {
+                    ht = new Hashtable
+                        {
+                           { "C_CustomerID", objCtomer?.CustomerID},
+                           { "C_CustomerName", objCtomer?.CustomerName},
+                           { "C_Country", objCtomer?.Country }
+                        };
+                    response = await objCustomerPostgreSQL.ExecuteCommand("SP_UpdateCustomer", ht, StaticInfos.PostgreSqlConnectionString);
                 }
                 
                 

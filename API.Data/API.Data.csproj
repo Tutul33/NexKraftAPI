@@ -20,6 +20,8 @@
     <PackageReference Include="MySql.Data" Version="8.0.32.1" />
     <PackageReference Include="MySql.EntityFrameworkCore" Version="7.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Npgsql" Version="7.0.2" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.3" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
   </ItemGroup>
 
@@ -28,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="ORM\PostgreDataModel\" />
     <Folder Include="ORM\DataModels\" />
     <Folder Include="ORM\MySqlDataModel\" />
   </ItemGroup>
