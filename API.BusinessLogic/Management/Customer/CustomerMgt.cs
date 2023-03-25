@@ -75,7 +75,7 @@ namespace API.BusinessLogic.Management.Customer
         {
             objCustomer = new GenericFactory<vmCustomer>();
             objCustomerMySQL = new GenericFactoryMySql<vmCustomer>();
-            objCustomerPostgreSQL = new GenericFactoryPostgreSql<vmCustomer>();
+            objCustomerPostgreSQL = new GenericFactoryPostgreSql<vmCustomer?>();
             vmCustomer? customer = new vmCustomer();
             try
             {
@@ -99,11 +99,8 @@ namespace API.BusinessLogic.Management.Customer
                 }
                 else if (StaticInfos.IsPostgreSQL)
                 {
-                    ht = new Hashtable
-                          {
-                             { "C_CustomerID", cmnParam.Id}
-                          };
-                    customer = await objCustomerMySQL.ExecuteCommandSingle("SP_GetCustomerByCustomerID", ht, StaticInfos.PostgreSqlConnectionString);
+                    string functionName = "fnc_getcustomer_by_id(" + cmnParam.Id + ")";
+                    customer = await objCustomerPostgreSQL.ExecuteQuerySingleString(functionName, StaticInfos.PostgreSqlConnectionString);
 
                 }
 
@@ -183,7 +180,7 @@ namespace API.BusinessLogic.Management.Customer
                     response = await objCustomer.ExecuteCommand("SP_CreateCustomer", ht, StaticInfos.MsSqlConnectionString);
 
                 }
-                else if (StaticInfos.IsMySQL) 
+                else if (StaticInfos.IsMySQL)
                 {
                     ht = new Hashtable
                      {
@@ -192,14 +189,14 @@ namespace API.BusinessLogic.Management.Customer
                      };
                     response = await objCustomerMySQL.ExecuteCommand("SP_CreateCustomer", ht, StaticInfos.MySqlConnectionString);
                 }
-                else if (StaticInfos.IsPostgreSQL) 
+                else if (StaticInfos.IsPostgreSQL)
                 {
                     ht = new Hashtable
                      {
                       { "customername", objCtomer?.CustomerName},
                       { "country", objCtomer?.Country }
                      };
-                    response = await objCustomerPostgreSQL.ExecuteCommand("sp_createcustomernew", ht, StaticInfos.PostgreSqlConnectionString);
+                    response = await objCustomerPostgreSQL.ExecuteCommand("sp_createcustomer", ht, StaticInfos.PostgreSqlConnectionString);
                 }
 
                 if (response > 0)
@@ -220,7 +217,7 @@ namespace API.BusinessLogic.Management.Customer
         }
         public async Task<object?> UpdateCustomer(vmCustomerUpdate? objCtomer)
         {
-            objCustomer = new GenericFactory<vmCustomer>(); 
+            objCustomer = new GenericFactory<vmCustomer>();
             objCustomerMySQL = new GenericFactoryMySql<vmCustomer>();
             objCustomerPostgreSQL = new GenericFactoryPostgreSql<vmCustomer>();
             string message = string.Empty; bool resstate = false;

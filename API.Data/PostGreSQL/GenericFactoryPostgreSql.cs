@@ -39,17 +39,13 @@ namespace API.Data.PostGreSQL
                             NpgsqlParameter parameter = new NpgsqlParameter("@" + str, ht[obj]);
                             cmd.Parameters.Add(parameter);
                         }
-                        NpgsqlParameter outParm = new NpgsqlParameter("@outid", NpgsqlDbType.Integer)
+                        NpgsqlParameter outParm = new NpgsqlParameter("@is_success", NpgsqlDbType.Boolean)
                         {
                             Direction = ParameterDirection.Output
                         };
                         cmd.Parameters.Add(outParm);
                         IDataReader dr = cmd.ExecuteReader();
-                        //if (dr.Read())
-                        //{
-                        //    result = dr.GetInt32(0);
-                        //}
-                        result = Convert.ToInt32(outParm.Value);
+                        result = Convert.ToBoolean(outParm.Value) ? 1 : 0;
                         cmd.Parameters.Clear();
                     }
                 }
@@ -150,7 +146,7 @@ namespace API.Data.PostGreSQL
                             string str = Convert.ToString(obj);
                             NpgsqlParameter parameter = new NpgsqlParameter("@" + str, ht[obj]);
                             cmd.Parameters.Add(parameter);
-                        }                        
+                        }
                         Results = DataReaderMapToList<T?>(cmd.ExecuteReader());
                         cmd.Parameters.Clear();
                     }
@@ -270,11 +266,11 @@ namespace API.Data.PostGreSQL
             });
         }
 
-        public Task<List<T>?> ExecuteQueryString(string spQuery, Hashtable ht, string conString)
+        public Task<List<T?>?> ExecuteQueryString(string spQuery, Hashtable ht, string conString)
         {
             return Task.Run(() =>
             {
-                List<T>? Results = null;
+                List<T?>? Results = null;
                 try
                 {
                     using (NpgsqlConnection con = new NpgsqlConnection(conString))
@@ -304,6 +300,35 @@ namespace API.Data.PostGreSQL
                 return Results;
             });
         }
+        public Task<T?> ExecuteQuerySingleString(string spQuery, string conString)
+        {
+            return Task.Run(() =>
+            {
+                T? Results = null;
+                try
+                {
+                    using (NpgsqlConnection con = new NpgsqlConnection(conString))
+                    {
+                        con.Open();
+                        NpgsqlCommand cmd = new NpgsqlCommand();
+                        cmd.CommandText = "select * from " + spQuery;
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Connection = con;
+                        
+                        using (IDataReader reader = cmd.ExecuteReader())
+                        {
+                            Results = DataReaderMapToList<T>(reader).FirstOrDefault();
+                        }
+                        cmd.Parameters.Clear();
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                }
+                return Results;
+            });
+        }
 
         public Task<List<T?>?> ExecuteQueryList(string spQuery, string conString)
         {
@@ -316,7 +341,7 @@ namespace API.Data.PostGreSQL
                     {
                         con.Open();
                         NpgsqlCommand cmd = new NpgsqlCommand();
-                        cmd.CommandText = "select * from "+spQuery;
+                        cmd.CommandText = "select * from " + spQuery;
                         cmd.CommandType = CommandType.Text;
                         cmd.Connection = con;
 
