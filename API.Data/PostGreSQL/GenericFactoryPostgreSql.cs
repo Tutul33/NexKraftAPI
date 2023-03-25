@@ -18,6 +18,12 @@ namespace API.Data.PostGreSQL
 {
     public class GenericFactoryPostgreSql<T> : IGenericFactoryPostgreSql<T> where T : class, new()
     {
+        public PostGreSqlDbConnection db = null;
+        public GenericFactoryPostgreSql(PostGreSqlDbConnection dbCon)
+        {
+            db = dbCon;
+        }
+
         public Task<int> ExecuteCommand(string spQuery, Hashtable ht, string conString)
         {
             return Task.Run(() =>
@@ -25,29 +31,30 @@ namespace API.Data.PostGreSQL
                 int result = 0;
                 try
                 {
-                    using (NpgsqlConnection con = new NpgsqlConnection(conString))
-                    {
-                        con.Open();
-                        NpgsqlCommand cmd = new NpgsqlCommand();
-                        cmd.CommandText = spQuery;
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Connection = con;
+                    //using (NpgsqlConnection con = new NpgsqlConnection(conString))
+                    //{
+                    //    con.Open();
+                    //    NpgsqlCommand cmd = new NpgsqlCommand();
+                    NpgsqlCommand cmd = db.Connection.CreateCommand();
+                    cmd.CommandText = spQuery;
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    //cmd.Connection = con;
 
-                        foreach (object obj in ht.Keys)
-                        {
-                            string str = Convert.ToString(obj);
-                            NpgsqlParameter parameter = new NpgsqlParameter("@" + str, ht[obj]);
-                            cmd.Parameters.Add(parameter);
-                        }
-                        NpgsqlParameter outParm = new NpgsqlParameter("@is_success", NpgsqlDbType.Boolean)
-                        {
-                            Direction = ParameterDirection.Output
-                        };
-                        cmd.Parameters.Add(outParm);
-                        IDataReader dr = cmd.ExecuteReader();
-                        result = Convert.ToBoolean(outParm.Value) ? 1 : 0;
-                        cmd.Parameters.Clear();
+                    foreach (object obj in ht.Keys)
+                    {
+                        string str = Convert.ToString(obj);
+                        NpgsqlParameter parameter = new NpgsqlParameter("@" + str, ht[obj]);
+                        cmd.Parameters.Add(parameter);
                     }
+                    NpgsqlParameter outParm = new NpgsqlParameter("@is_success", NpgsqlDbType.Boolean)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+                    cmd.Parameters.Add(outParm);
+                    IDataReader dr = cmd.ExecuteReader();
+                    result = Convert.ToBoolean(outParm.Value) ? 1 : 0;
+                    cmd.Parameters.Clear();
+                    // }
                 }
                 catch (Exception ex)
                 {
@@ -58,36 +65,6 @@ namespace API.Data.PostGreSQL
             });
         }
 
-        //public Task<int> ExecuteCommandInt(string spQuery, string conString)
-        //{
-        //    return Task.Run(() =>
-        //    {
-        //        int result = 0;
-        //        try
-        //        {
-        //            using (NpgsqlConnection con = new NpgsqlConnection(conString))
-        //            {
-        //                con.Open();
-        //                NpgsqlCommand cmd = new NpgsqlCommand();
-        //                cmd.CommandText = spQuery;
-        //                cmd.CommandType = CommandType.Text;
-        //                cmd.Connection = con;
-        //                IDataReader dr = cmd.ExecuteReader();
-        //                if (dr.Read())
-        //                {
-        //                    result = dr.GetInt32(0);
-        //                }
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-
-        //        }
-
-        //        return result;
-        //    });
-        //}
-
         public Task<string> ExecuteCommandString(string spQuery, Hashtable ht, string conString)
         {
             return Task.Run(() =>
@@ -95,29 +72,29 @@ namespace API.Data.PostGreSQL
                 string result = string.Empty;
                 try
                 {
-                    using (NpgsqlConnection con = new NpgsqlConnection(conString))
+                    //using (NpgsqlConnection con = new NpgsqlConnection(conString))
+                    //{
+                    //    con.Open();
+                    NpgsqlCommand cmd = db.Connection.CreateCommand();
+                    cmd.CommandText = spQuery;
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    //cmd.Connection = con;
+
+                    foreach (object obj in ht.Keys)
                     {
-                        con.Open();
-                        NpgsqlCommand cmd = new NpgsqlCommand();
-                        cmd.CommandText = spQuery;
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Connection = con;
-
-                        foreach (object obj in ht.Keys)
-                        {
-                            string str = Convert.ToString(obj);
-                            NpgsqlParameter parameter = new NpgsqlParameter("@" + str, ht[obj]);
-                            cmd.Parameters.Add(parameter);
-                        }
-
-                        IDataReader dr = cmd.ExecuteReader();
-                        if (dr.Read())
-                        {
-                            result = Convert.ToString(dr.GetString(0));
-                        }
-
-                        cmd.Parameters.Clear();
+                        string str = Convert.ToString(obj);
+                        NpgsqlParameter parameter = new NpgsqlParameter("@" + str, ht[obj]);
+                        cmd.Parameters.Add(parameter);
                     }
+
+                    IDataReader dr = cmd.ExecuteReader();
+                    if (dr.Read())
+                    {
+                        result = Convert.ToString(dr.GetString(0));
+                    }
+
+                    cmd.Parameters.Clear();
+                    //}
                 }
                 catch (Exception ex)
                 {
@@ -127,179 +104,6 @@ namespace API.Data.PostGreSQL
             });
         }
 
-        //public Task<List<T?>?> ExecuteCommandList(string spQuery, Hashtable ht, string conString)
-        //{
-        //    return Task.Run(() =>
-        //    {
-        //        List<T?>? Results = null;
-        //        try
-        //        {
-        //            using (NpgsqlConnection con = new NpgsqlConnection(StaticInfos.PostgreSqlConnectionString))
-        //            {
-        //                con.Open();
-        //                NpgsqlCommand cmd = new NpgsqlCommand();
-        //                cmd.CommandText = spQuery;
-        //                cmd.CommandType = CommandType.Text;
-        //                cmd.Connection = con;
-        //                foreach (object obj in ht.Keys)
-        //                {
-        //                    string str = Convert.ToString(obj);
-        //                    NpgsqlParameter parameter = new NpgsqlParameter("@" + str, ht[obj]);
-        //                    cmd.Parameters.Add(parameter);
-        //                }
-        //                Results = DataReaderMapToList<T?>(cmd.ExecuteReader());
-        //                cmd.Parameters.Clear();
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-
-        //        }
-        //        return Results;
-        //    });
-        //}
-
-        //public Task<T?> ExecuteCommandSingle(string spQuery, Hashtable ht, string conString)
-        //{
-        //    return Task.Run(() =>
-        //    {
-        //        T? Results = null;
-        //        try
-        //        {
-        //            using (NpgsqlConnection con = new NpgsqlConnection(StaticInfos.PostgreSqlConnectionString))
-        //            {
-        //                con.Open();
-        //                NpgsqlCommand cmd = new NpgsqlCommand();
-        //                cmd.CommandText = spQuery;
-        //                cmd.CommandType = CommandType.StoredProcedure;
-        //                cmd.Connection = con;
-        //                foreach (object obj in ht.Keys)
-        //                {
-        //                    string str = Convert.ToString(obj);
-        //                    NpgsqlParameter parameter = new NpgsqlParameter("@" + str, ht[obj]);
-        //                    cmd.Parameters.Add(parameter);
-        //                }
-        //                Results = DataReaderMapToList<T>(cmd.ExecuteReader()).FirstOrDefault();
-        //                cmd.Parameters.Clear();
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-
-        //        }
-        //        return Results;
-        //    });
-        //}
-
-        //public Task<T?> ExecuteQuerySingle(string spQuery, Hashtable ht, string conString)
-        //{
-        //    return Task.Run(() =>
-        //    {
-        //        T? Results = null;
-
-        //        try
-        //        {
-        //            using (NpgsqlConnection con = new NpgsqlConnection(StaticInfos.PostgreSqlConnectionString))
-        //            {
-        //                con.Open();
-        //                NpgsqlCommand cmd = new NpgsqlCommand();
-        //                cmd.CommandText = spQuery;
-        //                cmd.CommandType = CommandType.StoredProcedure;
-        //                cmd.Connection = con;
-
-        //                foreach (object obj in ht.Keys)
-        //                {
-        //                    string str = Convert.ToString(obj);
-        //                    NpgsqlParameter parameter = new NpgsqlParameter("@" + str, ht[obj]);
-        //                    cmd.Parameters.Add(parameter);
-        //                }
-
-        //                Results = DataReaderMapToList<T>(cmd.ExecuteReader()).FirstOrDefault();
-        //                cmd.Parameters.Clear();
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-
-        //        }
-
-        //        return Results;
-        //    });
-        //}
-
-        //public Task<List<T>?> ExecuteQuery(string spQuery, Hashtable ht, string conString)
-        //{
-        //    return Task.Run(() =>
-        //    {
-        //        List<T>? Results = null;
-        //        try
-        //        {
-        //            using (NpgsqlConnection con = new NpgsqlConnection(StaticInfos.PostgreSqlConnectionString))
-        //            {
-        //                con.Open();
-        //                NpgsqlCommand cmd = new NpgsqlCommand();
-        //                cmd.CommandText = spQuery;
-        //                cmd.CommandType = CommandType.StoredProcedure;
-        //                cmd.Connection = con;
-
-        //                foreach (object obj in ht.Keys)
-        //                {
-        //                    string str = Convert.ToString(obj);
-        //                    NpgsqlParameter parameter = new NpgsqlParameter("@" + str, ht[obj]);
-        //                    cmd.Parameters.Add(parameter);
-        //                }
-
-        //                using (IDataReader reader = cmd.ExecuteReader())
-        //                {
-        //                    Results = DataReaderMapToList<T>(reader).ToList();
-        //                }
-
-        //                cmd.Parameters.Clear();
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-
-        //        }
-
-        //        return Results;
-        //    });
-        //}
-
-        //public Task<List<T?>?> ExecuteQueryString(string spQuery, Hashtable ht, string conString)
-        //{
-        //    return Task.Run(() =>
-        //    {
-        //        List<T?>? Results = null;
-        //        try
-        //        {
-        //            using (NpgsqlConnection con = new NpgsqlConnection(conString))
-        //            {
-        //                con.Open();
-        //                NpgsqlCommand cmd = new NpgsqlCommand();
-        //                cmd.CommandText = spQuery;
-        //                cmd.CommandType = CommandType.Text;
-        //                cmd.Connection = con;
-        //                foreach (object obj in ht.Keys)
-        //                {
-        //                    string str = Convert.ToString(obj);
-        //                    NpgsqlParameter parameter = new NpgsqlParameter("@" + str, ht[obj]);
-        //                    cmd.Parameters.Add(parameter);
-        //                }
-        //                using (IDataReader reader = cmd.ExecuteReader())
-        //                {
-        //                    Results = DataReaderMapToList<T>(reader).ToList();
-        //                }
-        //                cmd.Parameters.Clear();
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-
-        //        }
-        //        return Results;
-        //    });
-        //}
         public Task<T?> ExecuteQuerySingleString(string spQuery, string conString)
         {
             return Task.Run(() =>
@@ -307,20 +111,20 @@ namespace API.Data.PostGreSQL
                 T? Results = null;
                 try
                 {
-                    using (NpgsqlConnection con = new NpgsqlConnection(conString))
+                    //using (NpgsqlConnection con = new NpgsqlConnection(conString))
+                    //{
+                    var cmd = db.Connection.CreateCommand();
+                    //NpgsqlCommand cmd = new NpgsqlCommand();
+                    cmd.CommandText = "select * from " + spQuery;
+                    cmd.CommandType = CommandType.Text;
+                    //cmd.Connection = con;
+
+                    using (IDataReader reader = cmd.ExecuteReader())
                     {
-                        con.Open();
-                        NpgsqlCommand cmd = new NpgsqlCommand();
-                        cmd.CommandText = "select * from " + spQuery;
-                        cmd.CommandType = CommandType.Text;
-                        cmd.Connection = con;
-                        
-                        using (IDataReader reader = cmd.ExecuteReader())
-                        {
-                            Results = DataReaderMapToList<T>(reader).FirstOrDefault();
-                        }
-                        cmd.Parameters.Clear();
+                        Results = DataReaderMapToList<T>(reader).FirstOrDefault();
                     }
+                    cmd.Parameters.Clear();
+                    // }
                 }
                 catch (Exception ex)
                 {
@@ -337,19 +141,20 @@ namespace API.Data.PostGreSQL
                 List<T?>? Results = null;
                 try
                 {
-                    using (NpgsqlConnection con = new NpgsqlConnection(conString))
-                    {
-                        con.Open();
-                        NpgsqlCommand cmd = new NpgsqlCommand();
-                        cmd.CommandText = "select * from " + spQuery;
-                        cmd.CommandType = CommandType.Text;
-                        cmd.Connection = con;
+                    //using (NpgsqlConnection con = new NpgsqlConnection(conString))
+                    //{
+                    //    con.Open();
 
-                        using (IDataReader reader = cmd.ExecuteReader())
-                        {
-                            Results = DataReaderMapToLists<T?>(reader).ToList();
-                        }
+                    NpgsqlCommand cmd = db.Connection.CreateCommand();
+                    cmd.CommandText = "select * from " + spQuery;
+                    cmd.CommandType = CommandType.Text;
+                    //cmd.Connection = con;
+
+                    using (IDataReader reader = cmd.ExecuteReader())
+                    {
+                        Results = DataReaderMapToLists<T?>(reader).ToList();
                     }
+                    //}
                 }
                 catch (Exception ex)
                 {
@@ -426,65 +231,6 @@ namespace API.Data.PostGreSQL
             return results;
         }
 
-        //public Task<string> ExecuteCommandJsonString(string spQuery, string conString)
-        //{
-        //    return Task.Run(() =>
-        //    {
-        //        string result = string.Empty;
-        //        try
-        //        {
-        //            using (NpgsqlConnection con = new NpgsqlConnection(conString))
-        //            {
-        //                con.Open();
-        //                NpgsqlCommand cmd = new NpgsqlCommand();
-        //                cmd.CommandText = spQuery;
-        //                cmd.CommandType = CommandType.Text;
-        //                cmd.Connection = con;
-
-        //                using (NpgsqlDataReader reader = cmd.ExecuteReader())
-        //                {
-        //                    result = Convert.ToString(ToJson(reader));
-        //                }
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-
-        //        }
-        //        return result;
-        //    });
-        //}
-
-        //public Task<string> ExecuteCommandString(string spQuery, string conString)
-        //{
-        //    return Task.Run(() =>
-        //    {
-        //        string result = string.Empty;
-        //        try
-        //        {
-        //            using (NpgsqlConnection con = new NpgsqlConnection(conString))
-        //            {
-        //                con.Open();
-        //                NpgsqlCommand cmd = new NpgsqlCommand();
-        //                cmd.CommandText = spQuery;
-        //                cmd.CommandType = CommandType.Text;
-        //                cmd.Connection = con;
-
-        //                IDataReader dr = cmd.ExecuteReader();
-        //                if (dr.Read())
-        //                {
-        //                    result = dr.GetString(0);
-        //                }
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-
-        //        }
-        //        return result;
-        //    });
-        //}
-
         private String ToJson(NpgsqlDataReader rdr)
         {
             StringBuilder sb = new StringBuilder();
@@ -513,6 +259,11 @@ namespace API.Data.PostGreSQL
 
                 return sw.ToString();
             }
+        }
+
+        public async Task ConnectionOpen()
+        {
+            await db.Connection.OpenAsync();
         }
     }
 }

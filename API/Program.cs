@@ -1,5 +1,8 @@
 using API.BusinessLogic.Interface.Customer;
 using API.BusinessLogic.Management.Customer;
+using API.Data.ADO.NET;
+using API.Data.MySQL;
+using API.Data.PostGreSQL;
 using API.ServiceRegister;
 using API.Settings;
 
@@ -16,6 +19,9 @@ StaticInfos.PostgreSqlConnectionString = _configuration.GetValue<string>("PostGr
 StaticInfos.IsMsSQL = _configuration.GetValue<bool>("IsMsSQL");
 StaticInfos.IsMySQL = _configuration.GetValue<bool>("IsMySQL");
 StaticInfos.IsPostgreSQL = _configuration.GetValue<bool>("IsPostgreSQL");
+builder.Services.AddTransient(_ => new MySqlDbConnection(StaticInfos.MySqlConnectionString));
+builder.Services.AddTransient(_ => new MsSqlDbConnection(StaticInfos.MsSqlConnectionString));
+builder.Services.AddTransient(_ => new PostGreSqlDbConnection(StaticInfos.PostgreSqlConnectionString));
 
 // Add services to the container.
 builder.Services.AddControllers();

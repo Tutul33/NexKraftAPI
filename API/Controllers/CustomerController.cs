@@ -46,12 +46,16 @@ namespace API.Controllers
         /// <param name="param"></param>
         /// <returns></returns>
         [HttpGet("[action]")]
-        public async Task<vmCustomer?> GetCustomerByCustomerID([FromQuery] string param)
+        public async Task<object?> GetCustomerByCustomerID([FromQuery] string param)
         {
-            vmCustomer? data = null;
+            object? data = null;
             try
             {
                 data = await mgt.GetCustomerByCustomerID(param);
+                if (data == null)
+                {
+                    data = new { message = "No data found" };
+                }
             }
             catch (Exception ex)
             {

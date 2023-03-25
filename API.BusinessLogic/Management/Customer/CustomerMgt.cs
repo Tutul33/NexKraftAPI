@@ -24,15 +24,20 @@ namespace API.BusinessLogic.Management.Customer
         GenericFactory<vmCustomer>? objCustomer = null;
         GenericFactoryMySql<vmCustomer>? objCustomerMySQL = null;
         GenericFactoryPostgreSql<vmCustomer>? objCustomerPostgreSQL = null;
-        public CustomerMgt() { }
-        public async Task<object?> GetCustomerList(string param)
-        {
-            dynamic? dParam = JsonConvert.DeserializeObject(param);
-            CommonData cmnParam = JsonConvert.DeserializeObject<CommonData>(dParam.ToString());
-
+        PostGreSqlDbConnection PostGre = null;
+        public CustomerMgt( PostGreSqlDbConnection db) {
             objCustomer = new GenericFactory<vmCustomer>();
             objCustomerMySQL = new GenericFactoryMySql<vmCustomer>();
-            objCustomerPostgreSQL = new GenericFactoryPostgreSql<vmCustomer>();
+            PostGre = db;
+        }        
+        public async Task<object?> GetCustomerList(string param)
+        {
+            await PostGre?.Connection.OpenAsync();
+            objCustomerPostgreSQL = new GenericFactoryPostgreSql<vmCustomer>(PostGre);
+
+            dynamic? dParam = JsonConvert.DeserializeObject(param);
+            CommonData cmnParam = JsonConvert.DeserializeObject<CommonData>(dParam.ToString());
+           
             List<vmCustomer?>? listCustomer = new List<vmCustomer?>();
             try
             {
@@ -71,12 +76,11 @@ namespace API.BusinessLogic.Management.Customer
                 listCustomer
             };
         }
-        public async Task<vmCustomer?> GetCustomerByCustomerID(string param)
-        {
-            objCustomer = new GenericFactory<vmCustomer>();
-            objCustomerMySQL = new GenericFactoryMySql<vmCustomer>();
-            objCustomerPostgreSQL = new GenericFactoryPostgreSql<vmCustomer?>();
+        public async Task<object?> GetCustomerByCustomerID(string param)
+        {           
             vmCustomer? customer = new vmCustomer();
+            await PostGre?.Connection.OpenAsync();
+            objCustomerPostgreSQL = new GenericFactoryPostgreSql<vmCustomer>(PostGre);
             try
             {
                 CommonData cmnParam = new CommonData();
@@ -98,7 +102,7 @@ namespace API.BusinessLogic.Management.Customer
                     customer = await objCustomerMySQL.ExecuteCommandSingle("SP_GetCustomerByCustomerID", ht, StaticInfos.MySqlConnectionString);
                 }
                 else if (StaticInfos.IsPostgreSQL)
-                {
+                {                   
                     string functionName = "fnc_getcustomer_by_id(" + cmnParam.Id + ")";
                     customer = await objCustomerPostgreSQL.ExecuteQuerySingleString(functionName, StaticInfos.PostgreSqlConnectionString);
 
@@ -113,9 +117,8 @@ namespace API.BusinessLogic.Management.Customer
         }
         public async Task<object?> DeleteCustomer(string param)
         {
-            objCustomer = new GenericFactory<vmCustomer>();
-            objCustomerMySQL = new GenericFactoryMySql<vmCustomer>();
-            objCustomerPostgreSQL = new GenericFactoryPostgreSql<vmCustomer>();
+            await PostGre?.Connection.OpenAsync();
+            objCustomerPostgreSQL = new GenericFactoryPostgreSql<vmCustomer>(PostGre);
             string message = string.Empty; bool resstate = false;
             try
             {
@@ -165,8 +168,8 @@ namespace API.BusinessLogic.Management.Customer
         }
         public async Task<object?> CreateCustomer(vmCustomer objCtomer)
         {
-            objCustomer = new GenericFactory<vmCustomer?>(); objCustomerMySQL = new GenericFactoryMySql<vmCustomer>();
-            objCustomerPostgreSQL = new GenericFactoryPostgreSql<vmCustomer>();
+            await PostGre?.Connection.OpenAsync();
+            objCustomerPostgreSQL = new GenericFactoryPostgreSql<vmCustomer>(PostGre);
             string message = string.Empty; bool resstate = false; int response = 0;
             try
             {
@@ -217,9 +220,8 @@ namespace API.BusinessLogic.Management.Customer
         }
         public async Task<object?> UpdateCustomer(vmCustomerUpdate? objCtomer)
         {
-            objCustomer = new GenericFactory<vmCustomer>();
-            objCustomerMySQL = new GenericFactoryMySql<vmCustomer>();
-            objCustomerPostgreSQL = new GenericFactoryPostgreSql<vmCustomer>();
+            await PostGre.Connection.OpenAsync();
+            objCustomerPostgreSQL = new GenericFactoryPostgreSql<vmCustomer>(PostGre);
             string message = string.Empty; bool resstate = false;
             try
             {

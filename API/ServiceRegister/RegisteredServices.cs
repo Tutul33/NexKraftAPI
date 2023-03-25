@@ -7,7 +7,10 @@ namespace API.ServiceRegister
     {
         public static void Register(WebApplicationBuilder builder)
         {
+            //Service Register
             builder.Services.AddScoped<ICustomerServices, CustomerMgt>();
+            //builder.Services.AddTransient<AppDb>(_ => new AppDb(Configuration["ConnectionStrings:DefaultConnection"]));
+
         }
     }
 }

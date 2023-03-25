@@ -11,6 +11,7 @@ namespace API.Data.PostGreSQL
     public interface IGenericFactoryPostgreSql<T> where T : class
     {
         Task<int> ExecuteCommand(string spQuery, Hashtable ht, string conString);
+        Task ConnectionOpen();
        // Task<int> ExecuteCommandInt(string spQuery, string conString);
         Task<string> ExecuteCommandString(string spQuery, Hashtable ht, string conString);
         //Task<List<T>?> ExecuteCommandList(string spQuery, Hashtable ht, string conString);
