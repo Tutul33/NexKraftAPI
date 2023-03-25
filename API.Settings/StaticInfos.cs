@@ -10,7 +10,7 @@ namespace API.Settings
     {
          public static string? MsSqlConnectionString;
          public static string? MySqlConnectionString;
-         public static string? PostgreSqlConnectionString;
+         public static string? PostgreSqlConnectionString="";
          public static bool IsMsSQL;
          public static bool IsMySQL;
          public static bool IsPostgreSQL;

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using Npgsql;
+using NpgsqlTypes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace API.Data.PostGreSQL
 {
@@ -37,12 +39,17 @@ namespace API.Data.PostGreSQL
                             NpgsqlParameter parameter = new NpgsqlParameter("@" + str, ht[obj]);
                             cmd.Parameters.Add(parameter);
                         }
-
-                        IDataReader dr = cmd.ExecuteReader();
-                        if (dr.Read())
+                        NpgsqlParameter outParm = new NpgsqlParameter("@outid", NpgsqlDbType.Integer)
                         {
-                            result = dr.GetInt32(0);
-                        }
+                            Direction = ParameterDirection.Output
+                        };
+                        cmd.Parameters.Add(outParm);
+                        IDataReader dr = cmd.ExecuteReader();
+                        //if (dr.Read())
+                        //{
+                        //    result = dr.GetInt32(0);
+                        //}
+                        result = Convert.ToInt32(outParm.Value);
                         cmd.Parameters.Clear();
                     }
                 }
@@ -134,30 +141,17 @@ namespace API.Data.PostGreSQL
                     using (NpgsqlConnection con = new NpgsqlConnection(StaticInfos.PostgreSqlConnectionString))
                     {
                         con.Open();
-                        NpgsqlCommand cmd = new NpgsqlCommand("select * from fnc_getcustomerlist(0,0)", con);
-                        //cmd.CommandText = spQuery;
-                        //cmd.CommandType = CommandType.Text;
-                        //cmd.Connection = con;
-                        //foreach (object obj in ht.Keys)
-                        //{
-                        //    string str = Convert.ToString(obj);
-                        //    NpgsqlParameter parameter = new NpgsqlParameter("@" + str, ht[obj]);
-                        //    cmd.Parameters.Add(parameter);
-                        //}
-                        // Passing PostGre SQL Function Name
-                        //NpgsqlCommand cmd = new NpgsqlCommand(spQuery, con);
-                        //foreach (object obj in ht.Keys)
-                        //{
-                        //    string str = Convert.ToString(obj);
-                        //    //NpgsqlParameter parameter = new NpgsqlParameter(str, ht[obj]);
-                        //    NpgsqlParameter parameter = new NpgsqlParameter(str, DbType.Int32);
-                        //    //cmd.Parameters.Add(parameter);
-                        //    cmd.Parameters.AddWithValue(parameter).Value= ht[obj];
-                        //}
-                        //cmd.CommandType = CommandType.StoredProcedure;
-                        // Execute the query and obtain a result set
-                        NpgsqlDataReader readData = cmd.ExecuteReader();
-                        Results = DataReaderMapToLists<T?>(readData);
+                        NpgsqlCommand cmd = new NpgsqlCommand();
+                        cmd.CommandText = spQuery;
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Connection = con;
+                        foreach (object obj in ht.Keys)
+                        {
+                            string str = Convert.ToString(obj);
+                            NpgsqlParameter parameter = new NpgsqlParameter("@" + str, ht[obj]);
+                            cmd.Parameters.Add(parameter);
+                        }                        
+                        Results = DataReaderMapToList<T?>(cmd.ExecuteReader());
                         cmd.Parameters.Clear();
                     }
                 }
@@ -311,18 +305,18 @@ namespace API.Data.PostGreSQL
             });
         }
 
-        public Task<List<T>?> ExecuteQueryList(string spQuery, string conString)
+        public Task<List<T?>?> ExecuteQueryList(string spQuery, string conString)
         {
             return Task.Run(() =>
             {
-                List<T>? Results = null;
+                List<T?>? Results = null;
                 try
                 {
                     using (NpgsqlConnection con = new NpgsqlConnection(conString))
                     {
                         con.Open();
                         NpgsqlCommand cmd = new NpgsqlCommand();
-                        cmd.CommandText = spQuery;
+                        cmd.CommandText = "select * from "+spQuery;
                         cmd.CommandType = CommandType.Text;
                         cmd.Connection = con;
 
