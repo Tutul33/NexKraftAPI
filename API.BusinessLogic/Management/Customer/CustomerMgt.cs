@@ -225,7 +225,6 @@ namespace API.BusinessLogic.Management.Customer
             string message = string.Empty; bool resstate = false;
             try
             {
-                //vmCustomer? objCtomer = JsonConvert.DeserializeObject<vmCustomer?>(data.ToString());
                 int response = 0;
 
                 if (StaticInfos.IsMsSQL)
