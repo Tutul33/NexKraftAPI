@@ -45,4 +45,16 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+//Uncomment below for index.html
+//DefaultFilesOptions options = new DefaultFilesOptions();
+//options.DefaultFileNames.Clear();
+//options.DefaultFileNames.Add("/index.html");
+//app.UseDefaultFiles(options);
+
+//Uncomment below code for-- static files, such as HTML, CSS, images, and JavaScript, are assets an ASP.NET Core app serves directly to clients by default.
+//app.UseStaticFiles();
+
+//Uncomment below code for-- Enable all static file middleware (except directory browsing) for the current request path in the current directory.
+//app.UseFileServer(enableDirectoryBrowsing: false);
+
 app.Run();
