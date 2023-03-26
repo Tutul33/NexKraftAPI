@@ -7,9 +7,9 @@ namespace API.ServiceRegister
     {
         public static void Register(WebApplicationBuilder builder)
         {
-            //Service Register
+            //With a scoped service we get the same instance within the scope of a given http request
+            //but a new instance across different http requests.
             builder.Services.AddScoped<ICustomerServices, CustomerMgt>();
-            //builder.Services.AddTransient<AppDb>(_ => new AppDb(Configuration["ConnectionStrings:DefaultConnection"]));
 
         }
     }

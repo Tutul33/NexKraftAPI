@@ -18,7 +18,7 @@ namespace API.Data.PostGreSQL
 {
     public class GenericFactoryPostgreSql<T> : IGenericFactoryPostgreSql<T> where T : class, new()
     {
-        public PostGreSqlDbConnection db = null;
+        public PostGreSqlDbConnection? db = null;
         public GenericFactoryPostgreSql(PostGreSqlDbConnection dbCon)
         {
             db = dbCon;
