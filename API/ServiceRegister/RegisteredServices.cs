@@ -9,6 +9,7 @@ namespace API.ServiceRegister
         {
             //With a scoped service we get the same instance within the scope of a given http request
             //but a new instance across different http requests.
+            //Dependency Injection of Services
             builder.Services.AddScoped<ICustomerServices, CustomerMgt>();
 
         }

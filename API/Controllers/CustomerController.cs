@@ -11,7 +11,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomerController : ControllerBase, ICustomerServices
+    public class CustomerController : ControllerBase
     {
         private readonly ICustomerServices? mgt = null;
         public CustomerController(ICustomerServices newMgt)
