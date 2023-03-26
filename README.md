@@ -1,3 +1,4 @@
 # NexKraftAPI
 # ASP.NET CORE Hybrid project
-##Data Annotaion
+1. Data Annotaion with api model validation 
+
