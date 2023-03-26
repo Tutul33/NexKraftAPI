@@ -20,7 +20,7 @@ namespace API.BusinessLogic.Management.Customer
 {
     public class CustomerMgt : ICustomerServices
     {
-        Hashtable? ht = null;
+        Hashtable? ht;
         GenericFactory<vmCustomer>? objCustomer = null;
         GenericFactoryMySql<vmCustomer>? objCustomerMySQL = null;
         GenericFactoryPostgreSql<vmCustomer>? objCustomerPostgreSQL = null;
@@ -30,7 +30,7 @@ namespace API.BusinessLogic.Management.Customer
             objCustomerMySQL = new GenericFactoryMySql<vmCustomer>();
             PostGre = db;
         }        
-        public async Task<object?> GetCustomerList(CommonData cmnParam)
+        public async Task<object?> GetCustomerList(CustomerData cmnParam)
         {
             await PostGre.Connection.OpenAsync();
             objCustomerPostgreSQL = new GenericFactoryPostgreSql<vmCustomer>(PostGre);           
@@ -162,7 +162,7 @@ namespace API.BusinessLogic.Management.Customer
             }
             return new { message, resstate };
         }
-        public async Task<object?> CreateCustomer(vmCustomer objCtomer)
+        public async Task<object?> CreateCustomer(CreateCustomerModel objCtomer)
         {
             await PostGre.Connection.OpenAsync();
             objCustomerPostgreSQL = new GenericFactoryPostgreSql<vmCustomer>(PostGre);

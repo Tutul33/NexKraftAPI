@@ -24,7 +24,7 @@ namespace API.Controllers
         /// <param name="param"></param>
         /// <returns></returns>
         [HttpGet("[action]")]
-        public async Task<object?> GetCustomerList([FromQuery] CommonData param)
+        public async Task<object?> GetCustomerList([FromQuery] CustomerData param)
         {
             object? data = null;
             try
@@ -69,7 +69,7 @@ namespace API.Controllers
         /// <param name="data"></param>
         /// <returns></returns>
         [HttpPost("[action]")]
-        public async Task<object?> CreateCustomer([FromBody] vmCustomer data)
+        public async Task<object?> CreateCustomer([FromBody] CreateCustomerModel data)
         {
             object? resdata = null;
             try
