@@ -147,12 +147,12 @@ namespace API.BusinessLogic.Management.Customer
                          };
                     var outParam = new Hashtable
                          {
-                            { "is_success", cmnParam.Id}
+                            { "is_success", false}
                          };
-                    var param = await objCustomerPostgreSQL.ExecuteCommand("sp_deletecustomer", inParam,outParam);
-                    if (param.Count > 0)
+                    outParam = await objCustomerPostgreSQL.ExecuteCommand("sp_deletecustomer", inParam,outParam);
+                    if (outParam.Count > 0)
                     {
-                        foreach (DictionaryEntry obj in param)
+                        foreach (DictionaryEntry obj in outParam)
                         {
                             if (Convert.ToString(obj.Key + "").Contains("is_success"))
                             {
@@ -219,10 +219,10 @@ namespace API.BusinessLogic.Management.Customer
                         {
                            { "is_success", false}
                         };
-                    var param = await objCustomerPostgreSQL.ExecuteCommand("sp_createcustomer", inParam, outParam);
-                    if (param.Count > 0)
+                    outParam = await objCustomerPostgreSQL.ExecuteCommand("sp_createcustomer", inParam, outParam);
+                    if (outParam.Count > 0)
                     {
-                        foreach (DictionaryEntry obj in param)
+                        foreach (DictionaryEntry obj in outParam)
                         {
                             if (Convert.ToString(obj.Key + "").Contains("is_success"))
                             {
@@ -293,10 +293,10 @@ namespace API.BusinessLogic.Management.Customer
                         {
                            { "is_success", false}
                         };
-                    var param = await objCustomerPostgreSQL.ExecuteCommand("sp_updatecustomer", inParam, outParam);
-                    if (param.Count>0)
+                    outParam = await objCustomerPostgreSQL.ExecuteCommand("sp_updatecustomer", inParam, outParam);
+                    if (outParam.Count>0)
                     {
-                        foreach (DictionaryEntry obj in param)
+                        foreach (DictionaryEntry obj in outParam)
                         {
                             if (Convert.ToString(obj.Key + "").Contains("is_success"))
                             {

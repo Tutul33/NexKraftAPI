@@ -82,7 +82,7 @@ namespace API.Data.PostGreSQL
 
                     using (IDataReader reader = cmd.ExecuteReader())
                     {
-                        Results = DataReaderMapToList<T>(reader).FirstOrDefault();
+                        Results = DataReaderMapSingleData<T>(reader).FirstOrDefault();
                     }
                     cmd.Parameters.Clear();
                 }
@@ -118,7 +118,7 @@ namespace API.Data.PostGreSQL
             });
         }
 
-        public List<T?> DataReaderMapToList<Tentity>(IDataReader reader)
+        public List<T?> DataReaderMapSingleData<Tentity>(IDataReader reader)
         {
             var results = new List<T?>();
 
@@ -142,6 +142,34 @@ namespace API.Data.PostGreSQL
                                 Type convertTo = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
                                 property.SetValue(item, Convert.ChangeType(reader[property.Name], convertTo), null);
                             }
+                        }
+                    }
+                    results.Add(item);
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+            return results;
+        }
+        public List<T?> DataReaderMapToList<Tentity>(IDataReader reader)
+        {
+            var results = new List<T?>();
+
+            var columnCount = reader.FieldCount;
+            while (reader.Read())
+            {
+                var item = Activator.CreateInstance<T>();
+                try
+                {
+                    var rdrProperties = Enumerable.Range(0, columnCount).Select(i => reader.GetName(i)).ToArray();
+                    foreach (var property in typeof(T).GetProperties())
+                    {
+                        if (!reader.IsDBNull(reader.GetOrdinal(property.Name)))
+                        {
+                            Type convertTo = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
+                            property.SetValue(item, Convert.ChangeType(reader[property.Name], convertTo), null);
                         }
                     }
                     results.Add(item);

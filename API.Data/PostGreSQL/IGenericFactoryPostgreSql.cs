@@ -37,5 +37,6 @@ namespace API.Data.PostGreSQL
         /// <param name="reader"></param>
         /// <returns></returns>
         List<T?> DataReaderMapToList<Tentity>(IDataReader reader);
+        List<T?> DataReaderMapSingleData<Tentity>(IDataReader reader);
     }
 }
