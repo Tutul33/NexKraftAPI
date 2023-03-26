@@ -44,7 +44,8 @@ namespace API.BusinessLogic.Management.Customer
                     ht = new Hashtable
                          {
                             { "PageIndex", cmnParam.PageNumber },
-                            { "PageSize", cmnParam.PageSize}
+                            { "PageSize", cmnParam.PageSize},
+                            { "Search", cmnParam.Search}
                          };
                     listCustomer = await objCustomer.ExecuteCommandList("[dbo].[SP_GetCustomersPageWise]", ht, StaticInfos.MsSqlConnectionString);
 
@@ -54,7 +55,8 @@ namespace API.BusinessLogic.Management.Customer
                     ht = new Hashtable
                         {
                            { "PageIndex", cmnParam.PageNumber },
-                           { "PageSize", cmnParam.PageSize}
+                           { "PageSize", cmnParam.PageSize},
+                           { "Search", cmnParam.Search}
                         };
                     listCustomer = await objCustomerMySQL.ExecuteCommandList("SP_GetCustomersPageWise", ht, StaticInfos.MySqlConnectionString);
                 }
