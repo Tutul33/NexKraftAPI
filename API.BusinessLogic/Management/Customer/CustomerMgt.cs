@@ -152,11 +152,11 @@ namespace API.BusinessLogic.Management.Customer
                     var param = await objCustomerPostgreSQL.ExecuteCommand("sp_deletecustomer", inParam,outParam);
                     if (param.Count > 0)
                     {
-                        foreach (object key in param.Keys)
+                        foreach (DictionaryEntry obj in param)
                         {
-                            if (key.ToString().Contains("is_success"))
+                            if (obj.Key.ToString().Contains("is_success"))
                             {
-                                response = Convert.ToBoolean(param[key]) ? 1 : 0;
+                                response = Convert.ToBoolean(obj.Value) ? 1 : 0;
                             }
                         }
                     }
