@@ -15,6 +15,8 @@ using Azure;
 using System.Xml;
 using API.Data.MySQL;
 using API.Data.PostGreSQL;
+using Npgsql;
+using System.Data;
 
 namespace API.BusinessLogic.Management.Customer
 {
@@ -59,7 +61,7 @@ namespace API.BusinessLogic.Management.Customer
                 else if (StaticInfos.IsPostgreSQL)
                 {
                     string functionName = "fnc_getcustomerlist(" + cmnParam.PageNumber + "," + cmnParam.PageSize + ",'" + cmnParam.Search + "')";
-                    listCustomer = await objCustomerPostgreSQL.ExecuteQueryList(functionName, StaticInfos.PostgreSqlConnectionString);
+                    listCustomer = await objCustomerPostgreSQL.ExecuteQueryList(functionName);
                 }
 
             }
@@ -100,7 +102,7 @@ namespace API.BusinessLogic.Management.Customer
                 else if (StaticInfos.IsPostgreSQL)
                 {                   
                     string functionName = "fnc_getcustomer_by_id(" + cmnParam.Id + ")";
-                    customer = await objCustomerPostgreSQL.ExecuteQuerySingleString(functionName, StaticInfos.PostgreSqlConnectionString);
+                    customer = await objCustomerPostgreSQL.ExecuteQuerySingleString(functionName);
 
                 }
 
@@ -139,11 +141,29 @@ namespace API.BusinessLogic.Management.Customer
                 }
                 else if (StaticInfos.IsPostgreSQL)
                 {
-                    ht = new Hashtable
+                    var inParam = new Hashtable
                          {
                             { "customerid", cmnParam.Id}
                          };
-                    response = await objCustomerPostgreSQL.ExecuteCommand("sp_deletecustomer", ht, StaticInfos.PostgreSqlConnectionString);
+                    var outParam = new Hashtable
+                         {
+                            { "is_success", cmnParam.Id}
+                         };
+                    var param = await objCustomerPostgreSQL.ExecuteCommand("sp_deletecustomer", inParam,outParam);
+                    if (param.Count > 0)
+                    {
+                        foreach (object key in param.Keys)
+                        {
+                            if (key.ToString().Contains("is_success"))
+                            {
+                                response = Convert.ToBoolean(param[key]) ? 1 : 0;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        response = 1;
+                    }
 
                 }
                 if (response > 0)
@@ -190,12 +210,30 @@ namespace API.BusinessLogic.Management.Customer
                 }
                 else if (StaticInfos.IsPostgreSQL)
                 {
-                    ht = new Hashtable
+                    var inParam = new Hashtable
                      {
                       { "customername", objCtomer?.CustomerName},
                       { "country", objCtomer?.Country }
                      };
-                    response = await objCustomerPostgreSQL.ExecuteCommand("sp_createcustomer", ht, StaticInfos.PostgreSqlConnectionString);
+                    var outParam = new Hashtable
+                        {
+                           { "is_success", false}
+                        };
+                    var param = await objCustomerPostgreSQL.ExecuteCommand("sp_createcustomer", inParam, outParam);
+                    if (param.Count > 0)
+                    {
+                        foreach (object key in param.Keys)
+                        {
+                            if (key.ToString().Contains("is_success"))
+                            {
+                                response = Convert.ToBoolean(param[key]) ? 1 : 0;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        response = 1;
+                    }
                 }
 
                 if (response > 0)
@@ -245,13 +283,30 @@ namespace API.BusinessLogic.Management.Customer
                 }
                 else if (StaticInfos.IsPostgreSQL)
                 {
-                    ht = new Hashtable
+                    var inParam = new Hashtable
                         {
                            { "customerid", objCtomer?.CustomerID},
                            { "customername", objCtomer?.CustomerName},
                            { "country", objCtomer?.Country }
                         };
-                    response = await objCustomerPostgreSQL.ExecuteCommand("sp_updatecustomer", ht, StaticInfos.PostgreSqlConnectionString);
+                    var outParam = new Hashtable
+                        {
+                           { "is_success", false}
+                        };
+                    var param = await objCustomerPostgreSQL.ExecuteCommand("sp_updatecustomer", inParam, outParam);
+                    if (param.Count>0)
+                    {
+                        foreach (object key in param.Keys)
+                        {
+                            if (key.ToString().Contains("is_success")) {
+                                response = Convert.ToBoolean(param[key]) ? 1 : 0;
+                            }                            
+                        }
+                    }
+                    else
+                    {
+                        response = 1;
+                    }
                 }
 
 

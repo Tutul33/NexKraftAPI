@@ -10,19 +10,32 @@ namespace API.Data.PostGreSQL
 {
     public interface IGenericFactoryPostgreSql<T> where T : class
     {
-        Task<int> ExecuteCommand(string spQuery, Hashtable ht, string conString);
-        Task ConnectionOpen();
-       // Task<int> ExecuteCommandInt(string spQuery, string conString);
-        Task<string> ExecuteCommandString(string spQuery, Hashtable ht, string conString);
-        //Task<List<T>?> ExecuteCommandList(string spQuery, Hashtable ht, string conString);
-        //Task<T?> ExecuteCommandSingle(string spQuery, Hashtable ht, string conString);
-        //Task<T?> ExecuteQuerySingle(string spQuery, Hashtable ht, string conString);
-        //Task<List<T?>> ExecuteQuery(string spQuery, Hashtable ht, string conString);
-        //Task<List<T?>> ExecuteQueryString(string spQuery, Hashtable ht, string conString);
-        Task<T?> ExecuteQuerySingleString(string spQuery, string conString);
-        Task<List<T?>?> ExecuteQueryList(string spQuery, string conString);
-        //Task<string> ExecuteCommandJsonString(string spQuery, string conString);
-        //Task<string> ExecuteCommandString(string spQuery, string conString);
+        /// <summary>
+        /// Execute store procedure with parameter, return out parameter
+        /// </summary>
+        /// <param name="spQuery"></param>
+        /// <param name="inParam"></param>
+        /// <param name="outParam"></param>
+        /// <returns></returns>
+        Task<Hashtable> ExecuteCommand(string spQuery, Hashtable inParam,Hashtable outParam);
+        /// <summary>
+        /// Execute function and retrieve single record
+        /// </summary>
+        /// <param name="spQuery"></param>
+        /// <returns></returns>
+        Task<T?> ExecuteQuerySingleString(string spQuery);
+        /// <summary>
+        /// Execute function and retrieve list of records
+        /// </summary>
+        /// <param name="spQuery"></param>
+        /// <returns></returns>
+        Task<List<T?>?> ExecuteQueryList(string spQuery);
+        /// <summary>
+        /// Mapping data reader
+        /// </summary>
+        /// <typeparam name="Tentity"></typeparam>
+        /// <param name="reader"></param>
+        /// <returns></returns>
         List<T?> DataReaderMapToList<Tentity>(IDataReader reader);
     }
 }
