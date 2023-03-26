@@ -13,10 +13,10 @@ namespace API.Controllers
     [ApiController]
     public class CustomerController : ControllerBase
     {
-        private readonly ICustomerServices? mgt = null;
-        public CustomerController(ICustomerServices newMgt)
+        private readonly ICustomerServices serivce;
+        public CustomerController(ICustomerServices _serivce)
         {
-            mgt = newMgt;
+            serivce = _serivce;
         }
         /// <summary>
         /// This operation will get customer list
@@ -29,7 +29,7 @@ namespace API.Controllers
             object? data = null;
             try
             {
-                data = await mgt.GetCustomerList(param);
+                data = await serivce.GetCustomerList(param);
             }
             catch (Exception ex)
             {
@@ -51,7 +51,7 @@ namespace API.Controllers
             object? data = null;
             try
             {
-                data = await mgt.GetCustomerByCustomerID(param);
+                data = await serivce.GetCustomerByCustomerID(param);
                 if (data == null)
                 {
                     data = new { message = "No data found" };
@@ -74,7 +74,7 @@ namespace API.Controllers
             object? resdata = null;
             try
             {
-                resdata = await mgt.CreateCustomer(data);
+                resdata = await serivce.CreateCustomer(data);
 
             }
             catch (Exception ex)
@@ -95,7 +95,7 @@ namespace API.Controllers
             object? resdata = null;
             try
             {
-                resdata = await mgt.UpdateCustomer(data);
+                resdata = await serivce.UpdateCustomer(data);
             }
             catch (Exception ex)
             {
@@ -114,7 +114,7 @@ namespace API.Controllers
             object? resdata = null;
             try
             {
-                resdata = await mgt.DeleteCustomer(param);
+                resdata = await serivce.DeleteCustomer(param);
             }
             catch (Exception ex)
             {
