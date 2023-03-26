@@ -8,4 +8,4 @@
 6. Injecting DA(Data Access) layer into the BL(Business Logic) layer.It will secure loosely coupling and increase testability.
 
 # DataBase
-1. Find all type of databases from database folder.
+1. Find all type of databases from database folder.[NexKraftAPI/API.Data/Databases/]
