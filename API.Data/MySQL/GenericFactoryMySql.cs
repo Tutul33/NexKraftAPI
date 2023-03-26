@@ -47,7 +47,7 @@ namespace API.Data.MySQL
                 }
                 catch (Exception ex)
                 {
-                    
+                    ex.ToString();
                 }
 
                 return result;

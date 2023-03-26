@@ -1,4 +1,5 @@
-﻿using API.Data.ViewModels.Customers;
+﻿using API.Data.ViewModels.Common;
+using API.Data.ViewModels.Customers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,10 @@ namespace API.BusinessLogic.Interface.Customer
 {
     public interface ICustomerServices
     {
-        Task<object?> DeleteCustomer(string param);
-        Task<vmCustomer?> GetCustomerByCustomerID(string param);
-        Task<object?> GetCustomerList(string param);
-        Task<object?> CreateCustomer(object data);
-        Task<object?> UpdateCustomer(object data);
+        Task<object?> DeleteCustomer(int id);
+        Task<object?> GetCustomerByCustomerID(int id);
+        Task<object?> GetCustomerList(CustomerData param);
+        Task<object?> CreateCustomer(CreateCustomerModel data);
+        Task<object?> UpdateCustomer(vmCustomerUpdate data);
     }
 }

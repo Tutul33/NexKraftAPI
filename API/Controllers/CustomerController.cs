@@ -2,6 +2,7 @@
 using API.BusinessLogic.Management.Customer;
 using API.Data.ViewModels.Common;
 using API.Data.ViewModels.Customers;
+using API.Filters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -10,12 +11,12 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomerController : ControllerBase, ICustomerServices
+    public class CustomerController : ControllerBase
     {
-        private readonly ICustomerServices? mgt = null;
-        public CustomerController(ICustomerServices newMgt)
+        private readonly ICustomerServices serivce;
+        public CustomerController(ICustomerServices _serivce)
         {
-            mgt = newMgt;
+            serivce = _serivce;
         }
         /// <summary>
         /// This operation will get customer list
@@ -23,12 +24,12 @@ namespace API.Controllers
         /// <param name="param"></param>
         /// <returns></returns>
         [HttpGet("[action]")]
-        public async Task<object?> GetCustomerList([FromQuery] string param)
+        public async Task<object?> GetCustomerList([FromQuery] CustomerData param)
         {
             object? data = null;
             try
             {
-                data = await mgt.GetCustomerList(param);
+                data = await serivce.GetCustomerList(param);
             }
             catch (Exception ex)
             {
@@ -45,12 +46,16 @@ namespace API.Controllers
         /// <param name="param"></param>
         /// <returns></returns>
         [HttpGet("[action]")]
-        public async Task<vmCustomer?> GetCustomerByCustomerID([FromQuery] string param)
+        public async Task<object?> GetCustomerByCustomerID([FromQuery] int id)
         {
-            vmCustomer? data = null;
+            object? data = null;
             try
             {
-                data = await mgt.GetCustomerByCustomerID(param);
+                data = await serivce.GetCustomerByCustomerID(id);
+                if (data == null)
+                {
+                    data = new { message = "No data found" };
+                }
             }
             catch (Exception ex)
             {
@@ -64,12 +69,12 @@ namespace API.Controllers
         /// <param name="data"></param>
         /// <returns></returns>
         [HttpPost("[action]")]
-        public async Task<object?> CreateCustomer([FromBody] object data)
+        public async Task<object?> CreateCustomer([FromBody] CreateCustomerModel data)
         {
             object? resdata = null;
             try
             {
-                resdata = await mgt.CreateCustomer(data);
+                resdata = await serivce.CreateCustomer(data);
 
             }
             catch (Exception ex)
@@ -85,13 +90,12 @@ namespace API.Controllers
         /// <param name="data"></param>
         /// <returns></returns>
         [HttpPut("[action]")]
-        public async Task<object?> UpdateCustomer([FromBody] object data)
+        public async Task<object?> UpdateCustomer([FromBody] vmCustomerUpdate data)
         {
             object? resdata = null;
             try
             {
-                resdata = await mgt.UpdateCustomer(data);
-
+                resdata = await serivce.UpdateCustomer(data);
             }
             catch (Exception ex)
             {
@@ -105,12 +109,12 @@ namespace API.Controllers
         /// <param name="param"></param>
         /// <returns></returns>
         [HttpDelete("[action]")]
-        public async Task<object?> DeleteCustomer([FromQuery] string param)
+        public async Task<object?> DeleteCustomer([FromQuery] int id)
         {
             object? resdata = null;
             try
             {
-                resdata = await mgt.DeleteCustomer(param);
+                resdata = await serivce.DeleteCustomer(id);
             }
             catch (Exception ex)
             {
