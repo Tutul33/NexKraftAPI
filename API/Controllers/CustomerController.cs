@@ -24,7 +24,7 @@ namespace API.Controllers
         /// <param name="param"></param>
         /// <returns></returns>
         [HttpGet("[action]")]
-        public async Task<object?> GetCustomerList([FromQuery] string param)
+        public async Task<object?> GetCustomerList([FromQuery] CommonData param)
         {
             object? data = null;
             try
@@ -46,12 +46,12 @@ namespace API.Controllers
         /// <param name="param"></param>
         /// <returns></returns>
         [HttpGet("[action]")]
-        public async Task<object?> GetCustomerByCustomerID([FromQuery] string param)
+        public async Task<object?> GetCustomerByCustomerID([FromQuery] int id)
         {
             object? data = null;
             try
             {
-                data = await serivce.GetCustomerByCustomerID(param);
+                data = await serivce.GetCustomerByCustomerID(id);
                 if (data == null)
                 {
                     data = new { message = "No data found" };
@@ -109,12 +109,12 @@ namespace API.Controllers
         /// <param name="param"></param>
         /// <returns></returns>
         [HttpDelete("[action]")]
-        public async Task<object?> DeleteCustomer([FromQuery] string param)
+        public async Task<object?> DeleteCustomer([FromQuery] int id)
         {
             object? resdata = null;
             try
             {
-                resdata = await serivce.DeleteCustomer(param);
+                resdata = await serivce.DeleteCustomer(id);
             }
             catch (Exception ex)
             {

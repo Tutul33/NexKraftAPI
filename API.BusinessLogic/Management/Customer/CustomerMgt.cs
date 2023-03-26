@@ -30,13 +30,13 @@ namespace API.BusinessLogic.Management.Customer
             objCustomerMySQL = new GenericFactoryMySql<vmCustomer>();
             PostGre = db;
         }        
-        public async Task<object?> GetCustomerList(string param)
+        public async Task<object?> GetCustomerList(CommonData cmnParam)
         {
             await PostGre?.Connection.OpenAsync();
             objCustomerPostgreSQL = new GenericFactoryPostgreSql<vmCustomer>(PostGre);
 
-            dynamic? dParam = JsonConvert.DeserializeObject(param);
-            CommonData cmnParam = JsonConvert.DeserializeObject<CommonData>(dParam.ToString());
+            //dynamic? dParam = JsonConvert.DeserializeObject(param);
+            //CommonData cmnParam = JsonConvert.DeserializeObject<CommonData>(dParam.ToString());
            
             List<vmCustomer?>? listCustomer = new List<vmCustomer?>();
             try
@@ -76,15 +76,15 @@ namespace API.BusinessLogic.Management.Customer
                 listCustomer
             };
         }
-        public async Task<object?> GetCustomerByCustomerID(string param)
+        public async Task<object?> GetCustomerByCustomerID(int id)
         {           
             vmCustomer? customer = new vmCustomer();
-            await PostGre?.Connection.OpenAsync();
+            await PostGre.Connection.OpenAsync();
             objCustomerPostgreSQL = new GenericFactoryPostgreSql<vmCustomer>(PostGre);
             try
             {
                 CommonData cmnParam = new CommonData();
-                cmnParam.Id = Convert.ToInt32(param);
+                cmnParam.Id = id;
                 if (StaticInfos.IsMsSQL)
                 {
                     ht = new Hashtable
@@ -115,15 +115,15 @@ namespace API.BusinessLogic.Management.Customer
             }
             return customer;
         }
-        public async Task<object?> DeleteCustomer(string param)
+        public async Task<object?> DeleteCustomer(int id)
         {
-            await PostGre?.Connection.OpenAsync();
+            await PostGre.Connection.OpenAsync();
             objCustomerPostgreSQL = new GenericFactoryPostgreSql<vmCustomer>(PostGre);
             string message = string.Empty; bool resstate = false;
             try
             {
                 CommonData cmnParam = new CommonData(); int response = 0;
-                cmnParam.Id = Convert.ToInt32(param);
+                cmnParam.Id = id;
                 if (StaticInfos.IsMsSQL)
                 {
                     ht = new Hashtable
@@ -168,7 +168,7 @@ namespace API.BusinessLogic.Management.Customer
         }
         public async Task<object?> CreateCustomer(vmCustomer objCtomer)
         {
-            await PostGre?.Connection.OpenAsync();
+            await PostGre.Connection.OpenAsync();
             objCustomerPostgreSQL = new GenericFactoryPostgreSql<vmCustomer>(PostGre);
             string message = string.Empty; bool resstate = false; int response = 0;
             try
