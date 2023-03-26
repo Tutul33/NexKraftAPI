@@ -154,7 +154,7 @@ namespace API.BusinessLogic.Management.Customer
                     {
                         foreach (DictionaryEntry obj in param)
                         {
-                            if (obj.Key.ToString().Contains("is_success"))
+                            if (Convert.ToString(obj.Key + "").Contains("is_success"))
                             {
                                 response = Convert.ToBoolean(obj.Value) ? 1 : 0;
                             }

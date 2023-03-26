@@ -35,18 +35,16 @@ namespace API.Data.PostGreSQL
                     cmd.CommandText = spQuery;
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    foreach (object obj in inParam.Keys)
+                    foreach (DictionaryEntry obj in inParam)
                     {
-                        string str = Convert.ToString(obj);
-                        NpgsqlParameter parameter = new NpgsqlParameter("@" + str, inParam[obj]);
+                        NpgsqlParameter parameter = new NpgsqlParameter("@" + Convert.ToString(obj.Key), obj.Value);
                         cmd.Parameters.Add(parameter);
                     }
                     if (outParam != null)
                     {
-                        foreach (object obj in outParam.Keys)
+                        foreach (DictionaryEntry obj in outParam)
                         {
-                            string str = Convert.ToString(obj);
-                            NpgsqlParameter parameter = new NpgsqlParameter("@" + str, outParam[obj])
+                            NpgsqlParameter parameter = new NpgsqlParameter("@" + Convert.ToString(obj.Key), obj.Value)
                             {
                                 Direction = ParameterDirection.Output
                             };
