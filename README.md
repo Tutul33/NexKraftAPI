@@ -6,3 +6,6 @@
 4. PostgreSQL,MSSQL,MYSQL Database acesss. 
 5. Inversion of Control using Dependency Injection Pattern.
 6. Injecting DA(Data Access) layer into the BL(Business Logic) layer.It will secure loosely coupling and increase testability.
+
+# DataBase
+1. Find database from database folder.
