@@ -24,7 +24,7 @@ namespace API.BusinessLogic.Management.Customer
         GenericFactory<vmCustomer>? objCustomer = null;
         GenericFactoryMySql<vmCustomer>? objCustomerMySQL = null;
         GenericFactoryPostgreSql<vmCustomer>? objCustomerPostgreSQL = null;
-        PostGreSqlDbConnection PostGre = null;
+        PostGreSqlDbConnection PostGre;
         public CustomerMgt( PostGreSqlDbConnection db) {
             objCustomer = new GenericFactory<vmCustomer>();
             objCustomerMySQL = new GenericFactoryMySql<vmCustomer>();
@@ -32,12 +32,8 @@ namespace API.BusinessLogic.Management.Customer
         }        
         public async Task<object?> GetCustomerList(CommonData cmnParam)
         {
-            await PostGre?.Connection.OpenAsync();
-            objCustomerPostgreSQL = new GenericFactoryPostgreSql<vmCustomer>(PostGre);
-
-            //dynamic? dParam = JsonConvert.DeserializeObject(param);
-            //CommonData cmnParam = JsonConvert.DeserializeObject<CommonData>(dParam.ToString());
-           
+            await PostGre.Connection.OpenAsync();
+            objCustomerPostgreSQL = new GenericFactoryPostgreSql<vmCustomer>(PostGre);           
             List<vmCustomer?>? listCustomer = new List<vmCustomer?>();
             try
             {
