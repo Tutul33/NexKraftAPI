@@ -1,5 +1,6 @@
 ﻿using API.BusinessLogic.Interface.Customer;
 using API.BusinessLogic.Management.Customer;
+using API.BusinessLogic.Management.Login;
 
 namespace API.ServiceRegister
 {
@@ -12,6 +13,7 @@ namespace API.ServiceRegister
             //Dependency Injection of Services
             //Injecting DA(Data Access) layer into the BL(Business Logic) layer.It will set Loosely coupling and increase Testability.
             builder.Services.AddScoped<ICustomerServices, CustomerMgt>();
+            builder.Services.AddScoped<ILoginServices, LoginServices>();
 
         }
     }

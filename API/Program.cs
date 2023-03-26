@@ -17,6 +17,9 @@ StaticInfos.PostgreSqlConnectionString = _configuration.GetValue<string>("PostGr
 StaticInfos.IsMsSQL = _configuration.GetValue<bool>("IsMsSQL");
 StaticInfos.IsMySQL = _configuration.GetValue<bool>("IsMySQL");
 StaticInfos.IsPostgreSQL = _configuration.GetValue<bool>("IsPostgreSQL");
+StaticInfos.JwtKey = _configuration.GetValue<string>("Jwt:Key");
+StaticInfos.JwtIssuer = _configuration.GetValue<string>("Jwt:Issuer");
+StaticInfos.JwtAudience = _configuration.GetValue<string>("Jwt:Audience");
 //With a transient service, a new instance is provided every time an instance is requested
 //whether it is in the scope of same http request or across different http requests.
 builder.Services.AddTransient(_ => new MySqlDbConnection(StaticInfos.MySqlConnectionString));
