@@ -26,6 +26,5 @@ namespace API.Data.ViewModels.Customers
         [MinLength(1)]
         public string? CustomerName { get; set; }
         public string? Country { get; set; }
-        public int? RecordCount { get; set; }
     }
 }

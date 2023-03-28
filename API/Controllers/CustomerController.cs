@@ -11,21 +11,21 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomerController : ControllerBase, ICustomerServices
+    public class CustomerController : ControllerBase
     {
-        private readonly ICustomerServices? mgt = null;
-        public CustomerController(ICustomerServices newMgt)
+        private readonly ICustomerServices serivce;
+        public CustomerController(ICustomerServices _serivce)
         {
-            mgt = newMgt;
+            serivce = _serivce;
         }
         
         [HttpGet("[action]")]
-        public async Task<object?> GetCustomerList([FromQuery] string param)
+        public async Task<object?> GetCustomerList([FromQuery] CustomerData param)
         {
             object? data = null;
             try
             {
-                data = await mgt.GetCustomerList(param);
+                data = await serivce.GetCustomerList(param);
             }
             catch (Exception ex)
             {
@@ -38,12 +38,16 @@ namespace API.Controllers
         }
        
         [HttpGet("[action]")]
-        public async Task<vmCustomer?> GetCustomerByCustomerID([FromQuery] string param)
+        public async Task<object?> GetCustomerByCustomerID([FromQuery] int id)
         {
-            vmCustomer? data = null;
+            object? data = null;
             try
             {
-                data = await mgt.GetCustomerByCustomerID(param);
+                data = await serivce.GetCustomerByCustomerID(id);
+                if (data == null)
+                {
+                    data = new { message = "No data found" };
+                }
             }
             catch (Exception ex)
             {
@@ -53,12 +57,12 @@ namespace API.Controllers
         }
        
         [HttpPost("[action]")]
-        public async Task<object?> CreateCustomer([FromBody] vmCustomer data)
+        public async Task<object?> CreateCustomer([FromBody] CreateCustomerModel data)
         {
             object? resdata = null;
             try
             {
-                resdata = await mgt.CreateCustomer(data);
+                resdata = await serivce.CreateCustomer(data);
 
             }
             catch (Exception ex)
@@ -75,7 +79,7 @@ namespace API.Controllers
             object? resdata = null;
             try
             {
-                resdata = await mgt.UpdateCustomer(data);
+                resdata = await serivce.UpdateCustomer(data);
             }
             catch (Exception ex)
             {
@@ -85,12 +89,12 @@ namespace API.Controllers
         }
         
         [HttpDelete("[action]")]
-        public async Task<object?> DeleteCustomer([FromQuery] string param)
+        public async Task<object?> DeleteCustomer([FromQuery] int id)
         {
             object? resdata = null;
             try
             {
-                resdata = await mgt.DeleteCustomer(param);
+                resdata = await serivce.DeleteCustomer(id);
             }
             catch (Exception ex)
             {

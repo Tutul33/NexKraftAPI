@@ -17,11 +17,11 @@ public partial class NexKraftDbContext : DbContext
 
     public virtual DbSet<Customer> Customers { get; set; }
 
-    public virtual DbSet<Customerlogin> Customerlogins { get; set; }
+    public virtual DbSet<Userlogin> Userlogins { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseMySQL("Server=127.0.0.1;Database=NexKraftDB;User Id=root; Password=@Root12345#;");
+        => optionsBuilder.UseMySQL("Server=127.0.0.1;Database=NexKraftDB;User Id=root;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -36,21 +36,15 @@ public partial class NexKraftDbContext : DbContext
             entity.Property(e => e.CustomerName).HasMaxLength(300);
         });
 
-        modelBuilder.Entity<Customerlogin>(entity =>
+        modelBuilder.Entity<Userlogin>(entity =>
         {
             entity.HasKey(e => e.LoginId).HasName("PRIMARY");
 
-            entity.ToTable("customerlogin");
+            entity.ToTable("userlogin");
 
-            entity.HasIndex(e => e.CustomerId, "CustomerID_idx");
-
-            entity.Property(e => e.LoginId).HasColumnName("loginId");
-            entity.Property(e => e.Password).HasMaxLength(15);
-            entity.Property(e => e.UserName).HasMaxLength(100);
-
-            entity.HasOne(d => d.Customer).WithMany(p => p.Customerlogins)
-                .HasForeignKey(d => d.CustomerId)
-                .HasConstraintName("CustomerID");
+            entity.Property(e => e.Email).HasMaxLength(25);
+            entity.Property(e => e.Password).HasMaxLength(20);
+            entity.Property(e => e.UserName).HasMaxLength(300);
         });
 
         OnModelCreatingPartial(modelBuilder);
