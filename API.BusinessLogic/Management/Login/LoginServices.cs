@@ -1,5 +1,5 @@
 ﻿using API.BusinessLogic.Interface.Customer;
-using API.Data.ORM.MySqlDataModel;
+using API.Data.ORM.DataModels;
 using API.Data.ViewModels.Customers;
 using API.Settings;
 using Microsoft.EntityFrameworkCore;
@@ -17,23 +17,26 @@ namespace API.BusinessLogic.Management.Login
 {
     public class LoginServices : ILoginServices
     {
-        NexKraftDbContext _ctx;
+        Data.ORM.DataModels.NexKraftDbContext _ctx;
         public LoginServices() { }
-        public async Task<object> LoginUser(LoginCredential credential)
+        public async Task<object> LoginUser(LoginCredential credential,string userAgent,string remoteIpAddress)
         {
-            bool resstate = false;string token = string.Empty;
+            bool resstate = false; string token = string.Empty;
             try
             {
-                using (_ctx = new NexKraftDbContext())
+                using (_ctx = new Data.ORM.DataModels.NexKraftDbContext())
                 {
-                    var loggedUser = await _ctx.Userlogins.Where(u => u.UserName == credential.UserNmae && u.Password == credential.Password).FirstOrDefaultAsync();
+                    UserLogin loggedUser = await _ctx.UserLogins.Where(u => u.UserName == credential.UserNmae && u.Password == credential.Password).FirstOrDefaultAsync();
                     if (loggedUser != null)
                     {
                         LoginModel loginModel = new LoginModel()
                         {
-                            UserNmae = loggedUser?.UserName,
-                            Password = loggedUser?.Password,
-                            Email = loggedUser?.Email
+                            UserNmae = loggedUser.UserName,
+                            Password = loggedUser.Password,
+                            Email = (await _ctx.Customers.Where(x => x.CustomerId == loggedUser.CustomerId).FirstOrDefaultAsync())?.Email,
+                            MachineName=userAgent,
+                            RemoteIpAddress= remoteIpAddress,
+                            UserID= Convert.ToInt32(loggedUser.CustomerId)
                         };
                         token = await GenerateJSONWebToken(loginModel);
                         resstate = true;
@@ -44,7 +47,7 @@ namespace API.BusinessLogic.Management.Login
             {
                 ex.ToString();
             }
-            return new { jwtToken=token,isSuccess= resstate };
+            return new { jwtToken = token, isSuccess = resstate };
         }
         private async Task<string> GenerateJSONWebToken(LoginModel userInfo)
         {
@@ -69,7 +72,7 @@ namespace API.BusinessLogic.Management.Login
                 audience: StaticInfos.JwtAudience,
                 claims: claims,
                 notBefore: DateTime.UtcNow,
-                expires: DateTime.Now.AddMinutes(45),
+                expires: DateTime.UtcNow.AddMinutes(45),
                 signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(jwt);

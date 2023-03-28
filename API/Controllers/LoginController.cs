@@ -15,13 +15,17 @@ namespace API.Controllers
         {
             loginServices = _loginServices;
         }
-        public async Task<object> LoginUser(LoginCredential credential)
+        [HttpPost("[action]")]
+        public async Task<object> UserLogin(LoginCredential credential)
         {
             object result = null;
             try
             {
-                var login = await loginServices.LoginUser(credential);
-                if (login != null)
+                var userAgent = Request.Headers["User-Agent"];
+                var RemoteIpAddress = HttpContext.Connection.RemoteIpAddress.ToString();
+
+                result = await loginServices.LoginUser(credential, userAgent,RemoteIpAddress);
+                if (result == null)
                 {
                     result = new { message = "User not foud.", resstate = false };
                 }

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace API.Data.ORM.MySqlDataModel;
+namespace API.Data.ORM.DataModels;
 
-public partial class Customerlogin
+public partial class UserLogin
 {
     public int LoginId { get; set; }
 

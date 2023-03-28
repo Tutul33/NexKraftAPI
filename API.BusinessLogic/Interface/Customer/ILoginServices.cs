@@ -9,6 +9,6 @@ namespace API.BusinessLogic.Interface.Customer
 {
     public interface ILoginServices
     {
-        Task<object> LoginUser(LoginCredential credential);
+        Task<object> LoginUser(LoginCredential credential,string userAgent,string remoteIpAddress);
     }
 }

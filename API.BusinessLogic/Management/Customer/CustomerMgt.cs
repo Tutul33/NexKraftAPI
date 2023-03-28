@@ -34,8 +34,11 @@ namespace API.BusinessLogic.Management.Customer
         }        
         public async Task<object?> GetCustomerList(CustomerData cmnParam)
         {
-            await PostGre.Connection.OpenAsync();
-            objCustomerPostgreSQL = new GenericFactoryPostgreSql<vmCustomer>(PostGre);           
+            if (StaticInfos.IsPostgreSQL)
+            {
+                await PostGre.Connection.OpenAsync();
+                objCustomerPostgreSQL = new GenericFactoryPostgreSql<vmCustomer>(PostGre);
+            }
             List<vmCustomer?>? listCustomer = new List<vmCustomer?>();
             try
             {
@@ -79,8 +82,11 @@ namespace API.BusinessLogic.Management.Customer
         public async Task<object?> GetCustomerByCustomerID(int id)
         {           
             vmCustomer? customer = new vmCustomer();
-            await PostGre.Connection.OpenAsync();
-            objCustomerPostgreSQL = new GenericFactoryPostgreSql<vmCustomer>(PostGre);
+            if (StaticInfos.IsPostgreSQL)
+            {
+                await PostGre.Connection.OpenAsync();
+                objCustomerPostgreSQL = new GenericFactoryPostgreSql<vmCustomer>(PostGre);
+            }
             try
             {
                 CommonData cmnParam = new CommonData();
@@ -117,8 +123,11 @@ namespace API.BusinessLogic.Management.Customer
         }
         public async Task<object?> DeleteCustomer(int id)
         {
-            await PostGre.Connection.OpenAsync();
-            objCustomerPostgreSQL = new GenericFactoryPostgreSql<vmCustomer>(PostGre);
+            if (StaticInfos.IsPostgreSQL)
+            {
+                await PostGre.Connection.OpenAsync();
+                objCustomerPostgreSQL = new GenericFactoryPostgreSql<vmCustomer>(PostGre);
+            }
             string message = string.Empty; bool resstate = false;
             try
             {
@@ -186,8 +195,12 @@ namespace API.BusinessLogic.Management.Customer
         }
         public async Task<object?> CreateCustomer(CreateCustomerModel objCtomer)
         {
-            await PostGre.Connection.OpenAsync();
-            objCustomerPostgreSQL = new GenericFactoryPostgreSql<vmCustomer>(PostGre);
+            if (StaticInfos.IsPostgreSQL)
+            {
+                await PostGre.Connection.OpenAsync();
+                objCustomerPostgreSQL = new GenericFactoryPostgreSql<vmCustomer>(PostGre);
+            }
+            
             string message = string.Empty; bool resstate = false; int response = 0;
             try
             {
@@ -196,7 +209,8 @@ namespace API.BusinessLogic.Management.Customer
                     ht = new Hashtable
                      {
                       { "CustomerName", objCtomer?.CustomerName},
-                      { "Country", objCtomer?.Country }
+                      { "Country", objCtomer?.Country },
+                      { "Email", objCtomer?.Email }
                      };
                     response = await objCustomer.ExecuteCommand("SP_CreateCustomer", ht, StaticInfos.MsSqlConnectionString);
 
@@ -256,8 +270,11 @@ namespace API.BusinessLogic.Management.Customer
         }
         public async Task<object?> UpdateCustomer(vmCustomerUpdate? objCtomer)
         {
-            await PostGre.Connection.OpenAsync();
-            objCustomerPostgreSQL = new GenericFactoryPostgreSql<vmCustomer>(PostGre);
+            if (StaticInfos.IsPostgreSQL)
+            {
+                await PostGre.Connection.OpenAsync();
+                objCustomerPostgreSQL = new GenericFactoryPostgreSql<vmCustomer>(PostGre);
+            }
             string message = string.Empty; bool resstate = false;
             try
             {

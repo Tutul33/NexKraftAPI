@@ -56,7 +56,7 @@ namespace API.Controllers
             return data;
         }
        
-        [HttpPost("[action]")]
+        [HttpPost("[action]"), Authorizations]
         public async Task<object?> CreateCustomer([FromBody] CreateCustomerModel data)
         {
             object? resdata = null;
