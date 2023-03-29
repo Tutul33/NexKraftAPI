@@ -3,13 +3,14 @@ using API.BusinessLogic.Management.Customer;
 using API.Data.ViewModels.Common;
 using API.Data.ViewModels.Customers;
 using API.Filters;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]"), Produces("application/json"), EnableCors("AppPolicy")]
     [ApiController]
     public class CustomerController : ControllerBase
     {
@@ -19,7 +20,7 @@ namespace API.Controllers
             serivce = _serivce;
         }
         
-        [HttpGet("[action]")]
+        [HttpGet("[action]"), Authorizations]
         public async Task<object?> GetCustomerList([FromQuery] CustomerData param)
         {
             object? data = null;
@@ -37,7 +38,7 @@ namespace API.Controllers
             };
         }
        
-        [HttpGet("[action]")]
+        [HttpGet("[action]"), Authorizations]
         public async Task<object?> GetCustomerByCustomerID([FromQuery] int id)
         {
             object? data = null;
@@ -73,7 +74,7 @@ namespace API.Controllers
 
         }
         
-        [HttpPut("[action]")]
+        [HttpPut("[action]"), Authorizations]
         public async Task<object?> UpdateCustomer([FromBody] vmCustomerUpdate data)
         {
             object? resdata = null;
@@ -88,7 +89,7 @@ namespace API.Controllers
             return resdata;
         }
         
-        [HttpDelete("[action]")]
+        [HttpDelete("[action]"), Authorizations]
         public async Task<object?> DeleteCustomer([FromQuery] int id)
         {
             object? resdata = null;

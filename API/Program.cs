@@ -35,6 +35,7 @@ builder.Services.AddSwaggerGen();
 //Register All services
 RegisteredServices.Register(builder);
 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -43,11 +44,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseRouting();
+app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
 //Uncomment below for index.html
 //DefaultFilesOptions options = new DefaultFilesOptions();
 //options.DefaultFileNames.Clear();

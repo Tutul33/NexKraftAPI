@@ -10,5 +10,6 @@ namespace API.BusinessLogic.Interface.Customer
     public interface ILoginServices
     {
         Task<object> LoginUser(LoginCredential credential,string userAgent,string remoteIpAddress);
+        Task<string> GenerateNewToken(LoginModel userInfo, string userAgent, string remoteIpAddress);
     }
 }
