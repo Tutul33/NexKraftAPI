@@ -82,7 +82,7 @@ namespace API.Filters
                 {
                     isValid = false;
                 }
-                // return user id from JWT token if validation successful
+                // return true from JWT token if validation successful
                 return isValid;
             }
             catch

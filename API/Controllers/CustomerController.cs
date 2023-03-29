@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]"), Produces("application/json"), EnableCors("AppPolicy")]
+    [Route("api/[controller]"), Produces("application/json"), EnableCors]
     [ApiController]
     public class CustomerController : ControllerBase
     {
