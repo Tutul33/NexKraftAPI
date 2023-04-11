@@ -1,7 +1,7 @@
 ﻿using API.RepositoryManagement.Base;
 using API.RepositoryManagement.Base.Interfaces;
 using API.RepositoryManagement.Repositories.Interfaces;
-using API.Data.ORM.DataModels;
+using API.Data.ORM.MsSQLDataModels;
 using API.Data.ViewModels.Customers;
 using Microsoft.EntityFrameworkCore;
 using System;

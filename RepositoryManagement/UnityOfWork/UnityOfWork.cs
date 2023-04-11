@@ -1,6 +1,6 @@
 ﻿
 using API.RepositoryManagement.Repositories.Interfaces;
-using API.Data.ORM.DataModels;
+using API.Data.ORM.MsSQLDataModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;

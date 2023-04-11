@@ -1,7 +1,7 @@
 ﻿using API.RepositoryManagement.Base;
 using API.BusinessLogic.Interface.Customer;
 using API.RepositoryManagement.UnityOfWork.Interfaces;
-using API.Data.ORM.DataModels;
+using API.Data.ORM.MsSQLDataModels;
 using API.Data.ViewModels.Customers;
 using API.Settings;
 using Microsoft.EntityFrameworkCore;

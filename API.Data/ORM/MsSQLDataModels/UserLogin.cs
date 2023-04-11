@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace API.Data.ORM.DataModels;
+namespace API.Data.ORM.MsSQLDataModels;
 
 public partial class UserLogin
 {

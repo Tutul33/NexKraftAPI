@@ -1,4 +1,4 @@
-﻿using API.Data.ORM.DataModels;
+﻿using API.Data.ORM.MsSQLDataModels;
 using API.Data.ViewModels.Common;
 using API.Data.ViewModels.Customers;
 using System;

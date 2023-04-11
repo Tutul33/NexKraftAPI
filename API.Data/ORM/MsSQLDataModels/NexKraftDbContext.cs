@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace API.Data.ORM.DataModels;
+namespace API.Data.ORM.MsSQLDataModels;
 
 public partial class NexKraftDbContext : DbContext
 {

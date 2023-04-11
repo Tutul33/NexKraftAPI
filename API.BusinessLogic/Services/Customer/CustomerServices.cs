@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using API.Data.ViewModels.Customers;
-using API.Data.ORM.DataModels;
+using API.Data.ORM.MsSQLDataModels;
 using API.BusinessLogic.Interface.Customer;
 using Newtonsoft.Json;
 using Azure;

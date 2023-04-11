@@ -1,6 +1,6 @@
 ﻿using API.RepositoryManagement.Base;
 using API.RepositoryManagement.Repositories.Interfaces;
-using API.Data.ORM.DataModels;
+using API.Data.ORM.MsSQLDataModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
