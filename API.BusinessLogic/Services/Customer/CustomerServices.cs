@@ -18,16 +18,16 @@ using API.Data.PostGreSQL;
 using Npgsql;
 using System.Data;
 
-namespace API.BusinessLogic.Management.Customer
+namespace API.BusinessLogic.Services.Customer
 {
-    public class CustomerMgt : ICustomerServices
+    public class CustomerServices : ICustomerServices
     {
         Hashtable? ht;
         GenericFactory<vmCustomer>? objCustomer = null;
         GenericFactoryMySql<vmCustomer>? objCustomerMySQL = null;
         GenericFactoryPostgreSql<vmCustomer>? objCustomerPostgreSQL = null;
         PostGreSqlDbConnection PostGre;
-        public CustomerMgt( PostGreSqlDbConnection db) {
+        public CustomerServices( PostGreSqlDbConnection db) {
             objCustomer = new GenericFactory<vmCustomer>();
             objCustomerMySQL = new GenericFactoryMySql<vmCustomer>();
             PostGre = db;

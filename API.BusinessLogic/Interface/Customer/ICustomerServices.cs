@@ -1,4 +1,5 @@
-﻿using API.Data.ViewModels.Common;
+﻿using API.Data.ORM.DataModels;
+using API.Data.ViewModels.Common;
 using API.Data.ViewModels.Customers;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace API.BusinessLogic.Interface.Customer
 {
-    public interface ICustomerServices
+    public interface ICustomerServices 
     {
         Task<object?> DeleteCustomer(int id);
         Task<object?> GetCustomerByCustomerID(int id);

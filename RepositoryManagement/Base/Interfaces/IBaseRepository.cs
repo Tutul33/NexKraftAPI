@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace API.BusinessLogic.Base.Interfaces
+namespace API.RepositoryManagement.Base.Interfaces
 {
     public interface IBaseRepository<T> where T : class
     {

@@ -1,4 +1,4 @@
-﻿using API.BusinessLogic.Base.Interfaces;
+﻿using API.RepositoryManagement.Base.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace API.BusinessLogic.Base
+namespace API.RepositoryManagement.Base
 {
     public class BaseRepository<T> : IBaseRepository<T> where T : class
     {

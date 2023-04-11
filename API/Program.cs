@@ -1,5 +1,5 @@
-using API.BusinessLogic.UnityOfWork.Interfaces;
-using API.BusinessLogic.UnityOfWork;
+using API.RepositoryManagement.UnityOfWork.Interfaces;
+using API.RepositoryManagement.UnityOfWork;
 using API.Data.ADO.NET;
 using API.Data.MySQL;
 using API.Data.ORM.DataModels;

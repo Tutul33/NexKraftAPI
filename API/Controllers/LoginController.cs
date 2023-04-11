@@ -1,5 +1,5 @@
 ﻿using API.BusinessLogic.Interface.Customer;
-using API.BusinessLogic.Management.Login;
+using API.BusinessLogic.Sevices.Login;
 using API.Data.ViewModels.Customers;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;

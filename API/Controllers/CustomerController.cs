@@ -1,5 +1,5 @@
 ﻿using API.BusinessLogic.Interface.Customer;
-using API.BusinessLogic.Management.Customer;
+using API.BusinessLogic.Services.Customer;
 using API.Data.ViewModels.Common;
 using API.Data.ViewModels.Customers;
 using API.Filters;

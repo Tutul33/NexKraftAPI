@@ -1,28 +1,27 @@
-﻿using API.BusinessLogic.Interface.Customer;
-using API.BusinessLogic.Management.Customer;
-using API.BusinessLogic.Management.Login;
-using API.BusinessLogic.UnityOfWork.Interfaces;
+﻿
+using API.RepositoryManagement.Repositories.Interfaces;
 using API.Data.ORM.DataModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using API.RepositoryManagement.UnityOfWork.Interfaces;
+using API.RepositoryManagement.Repositories;
 
-namespace API.BusinessLogic.UnityOfWork
+namespace API.RepositoryManagement.UnityOfWork
 {
     public class UnitOfWork : IUnitOfWork
     {
         #region Properties
 
-        //private CustomerMgt _customerRepository;
-        //public ICustomerServices CustomerRepository => _customerRepository ?? (_customerRepository = new CustomerMgt(_dbContext));
+        private CustomerRepository _customerRepository;
+        public ICustomerRepository CustomerRepository => _customerRepository ?? (_customerRepository = new CustomerRepository(_dbContext));
 
-        private LoginServices _loginRepository;
-        public ILoginServices UserLoginRepository => _loginRepository ?? (_loginRepository = new LoginServices(_dbContext));
+        private UserLoginRepository _loginRepository;
+        public ILoginRepository UserLoginRepository => _loginRepository ?? (_loginRepository = new UserLoginRepository(_dbContext));
 
-        public ICustomerServices CustomerRepository => throw new NotImplementedException();
-
+        
         #endregion
 
         #region Readonlys
