@@ -39,9 +39,9 @@ public partial class NexKraftDbContext : DbContext
 
             entity.ToTable("UserLogin");
 
-            entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
-            entity.Property(e => e.Password).HasMaxLength(20);
-            entity.Property(e => e.UserName).HasMaxLength(50);
+            entity.Property(e => e.LoginId).HasColumnName("LoginID");
+            entity.Property(e => e.Password).HasMaxLength(100);
+            entity.Property(e => e.UserName).HasMaxLength(100);
 
             entity.HasOne(d => d.Customer).WithMany(p => p.UserLogins)
                 .HasForeignKey(d => d.CustomerId)

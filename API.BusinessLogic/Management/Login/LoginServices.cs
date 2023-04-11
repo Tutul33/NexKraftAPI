@@ -1,4 +1,5 @@
-﻿using API.BusinessLogic.Interface.Customer;
+﻿using API.BusinessLogic.Base;
+using API.BusinessLogic.Interface.Customer;
 using API.Data.ORM.DataModels;
 using API.Data.ViewModels.Customers;
 using API.Settings;
@@ -16,43 +17,76 @@ using System.Threading.Tasks;
 
 namespace API.BusinessLogic.Management.Login
 {
-    public class LoginServices : ILoginServices
+    public class LoginServices : BaseRepository<UserLogin>, ILoginServices
     {
         private ICustomerServices service; Data.ORM.DataModels.NexKraftDbContext? _ctx = null;
-        public LoginServices(ICustomerServices _service)
+        private NexKraftDbContext AppDbContext => _dbContext as NexKraftDbContext;
+        //public LoginServices(ICustomerServices _service)
+        //{
+        //    service = _service;
+        //}
+        public LoginServices(NexKraftDbContext dbContext) : base(dbContext)
         {
-            service = _service;
+
         }
-        public async Task<object> LoginUser(LoginCredential credential, string userAgent, string remoteIpAddress)
-        {
-            bool resstate = false; string token = string.Empty;
-            try
-            {
-                using (_ctx = new Data.ORM.DataModels.NexKraftDbContext())
-                {
-                    UserLogin? loggedUser = await _ctx.UserLogins.Where(u => u.UserName == credential.UserName && u.Password == credential.Password).FirstOrDefaultAsync();
-                    if (loggedUser != null)
-                    {
-                        LoginModel loginModel = new LoginModel()
-                        {
-                            UserName = loggedUser.UserName,
-                            Password = loggedUser.Password,
-                            Email = (await _ctx.Customers.Where(x => x.CustomerId == loggedUser.CustomerId).FirstOrDefaultAsync())?.Email,
-                            MachineName = userAgent,
-                            RemoteIpAddress = remoteIpAddress,
-                            CustomerID = Convert.ToInt32(loggedUser.CustomerId)
-                        };
-                        token = await GenerateJSONWebToken(loginModel);
-                        resstate = true;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                ex.ToString();
-            }
-            return new { jwtToken = token, isSuccess = resstate };
-        }
+        //public async Task<object> LoginUser(LoginCredential credential, string userAgent, string remoteIpAddress)
+        //{
+        //    bool resstate = false; string token = string.Empty;
+        //    try
+        //    {
+        //        using (_ctx = new Data.ORM.DataModels.NexKraftDbContext())
+        //        {
+        //            UserLogin? loggedUser = await _ctx.UserLogins.Where(u => u.UserName == credential.UserName && u.Password == credential.Password).FirstOrDefaultAsync();
+        //            if (loggedUser != null)
+        //            {
+        //                LoginModel loginModel = new LoginModel()
+        //                {
+        //                    UserName = loggedUser.UserName,
+        //                    Password = loggedUser.Password,
+        //                    Email = (await _ctx.Customers.Where(x => x.CustomerId == loggedUser.CustomerId).FirstOrDefaultAsync())?.Email,
+        //                    MachineName = userAgent,
+        //                    RemoteIpAddress = remoteIpAddress,
+        //                    CustomerID = Convert.ToInt32(loggedUser.CustomerId)
+        //                };
+        //                token = await GenerateJSONWebToken(loginModel);
+        //                resstate = true;
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ex.ToString();
+        //    }
+        //    return new { jwtToken = token, isSuccess = resstate };
+        //}
+
+        //public async Task<string> GenerateNewToken(LoginModel userInfo, string userAgent, string remoteIpAddress)
+        //{
+        //    string generatedToken = ""; _ctx = new Data.ORM.DataModels.NexKraftDbContext();
+        //    try
+        //    {
+        //        UserLogin? loggedUser = await _ctx.UserLogins.Where(u => u.CustomerId == userInfo.CustomerID).FirstOrDefaultAsync();
+        //        if (loggedUser != null)
+        //        {
+        //            LoginModel loginModel = new LoginModel()
+        //            {
+        //                UserName = loggedUser.UserName,
+        //                Password = loggedUser.Password,
+        //                Email = (await _ctx.Customers.Where(x => x.CustomerId == loggedUser.CustomerId).FirstOrDefaultAsync())?.Email,
+        //                MachineName = userAgent,
+        //                RemoteIpAddress = remoteIpAddress,
+        //                CustomerID = Convert.ToInt32(loggedUser.CustomerId)
+        //            };
+        //            generatedToken = await GenerateJSONWebToken(userInfo);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ex.ToString();
+        //    }
+        //    return generatedToken;
+        //}
+
         private async Task<string> GenerateJSONWebToken(LoginModel userInfo)
         {
             await Task.Yield();
@@ -81,31 +115,42 @@ namespace API.BusinessLogic.Management.Login
 
             return new JwtSecurityTokenHandler().WriteToken(jwt);
         }
-        public async Task<string> GenerateNewToken(LoginModel userInfo, string userAgent, string remoteIpAddress)
+
+        public async Task<object> LoginUser(LoginCredential credential, string userAgent, string remoteIpAddress)
         {
-            string generatedToken = ""; _ctx = new Data.ORM.DataModels.NexKraftDbContext();
+            bool resstate = false; string token = string.Empty;
             try
             {
-                UserLogin? loggedUser = await _ctx.UserLogins.Where(u => u.CustomerId == userInfo.CustomerID).FirstOrDefaultAsync();
+
+                //UserLogin? loggedUser = await _ctx.UserLogins.Where(u => u.UserName == credential.UserName && u.Password == credential.Password).FirstOrDefaultAsync();
+                IEnumerable<UserLogin>? loggedUsers = await GetManyAsync(filter: u => u.UserName == credential.UserName && u.Password == credential.Password);
+                var loggedUser=loggedUsers.FirstOrDefault();
                 if (loggedUser != null)
                 {
                     LoginModel loginModel = new LoginModel()
                     {
                         UserName = loggedUser.UserName,
                         Password = loggedUser.Password,
-                        Email = (await _ctx.Customers.Where(x => x.CustomerId == loggedUser.CustomerId).FirstOrDefaultAsync())?.Email,
+                        Email = "",//(await _ctx.Customers.Where(x => x.CustomerId == loggedUser.CustomerId).FirstOrDefaultAsync())?.Email,
                         MachineName = userAgent,
                         RemoteIpAddress = remoteIpAddress,
                         CustomerID = Convert.ToInt32(loggedUser.CustomerId)
                     };
-                    generatedToken = await GenerateJSONWebToken(userInfo);
+                    token = await GenerateJSONWebToken(loginModel);
+                    resstate = true;
                 }
+
             }
             catch (Exception ex)
             {
                 ex.ToString();
             }
-            return generatedToken;
+            return new { jwtToken = token, isSuccess = resstate };
+        }
+
+        public Task<string> GenerateNewToken(LoginModel userInfo, string userAgent, string remoteIpAddress)
+        {
+            throw new NotImplementedException();
         }
     }
 }

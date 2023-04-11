@@ -7,11 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API", "API.csproj", "{5DB49
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API.BusinessLogic", "..\API.BusinessLogic\API.BusinessLogic.csproj", "{F1F7E68E-499B-4338-82AB-B9F0532E3CCD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API.Data", "..\API.Data\API.Data.csproj", "{E5691B56-C774-410D-9D95-8D08CF30D580}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API.Data", "..\API.Data\API.Data.csproj", "{E5691B56-C774-410D-9D95-8D08CF30D580}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API.Utility", "..\API.Utility\API.Utility.csproj", "{47853426-24B0-44FD-86B3-D162BAD06882}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API.Utility", "..\API.Utility\API.Utility.csproj", "{47853426-24B0-44FD-86B3-D162BAD06882}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API.Settings", "..\API.Settings\API.Settings.csproj", "{043DB270-EFA9-4280-8D52-1057A17C57A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API.Settings", "..\API.Settings\API.Settings.csproj", "{043DB270-EFA9-4280-8D52-1057A17C57A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

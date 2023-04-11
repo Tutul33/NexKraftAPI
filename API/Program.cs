@@ -1,8 +1,13 @@
+using API.BusinessLogic.UnityOfWork.Interfaces;
+using API.BusinessLogic.UnityOfWork;
 using API.Data.ADO.NET;
 using API.Data.MySQL;
+using API.Data.ORM.DataModels;
 using API.Data.PostGreSQL;
 using API.ServiceRegister;
 using API.Settings;
+using Microsoft.EntityFrameworkCore;
+using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,17 +25,33 @@ StaticInfos.IsPostgreSQL = _configuration.GetValue<bool>("IsPostgreSQL");
 StaticInfos.JwtKey = _configuration.GetValue<string>("Jwt:Key");
 StaticInfos.JwtIssuer = _configuration.GetValue<string>("Jwt:Issuer");
 StaticInfos.JwtAudience = _configuration.GetValue<string>("Jwt:Audience");
+
 //With a transient service, a new instance is provided every time an instance is requested
 //whether it is in the scope of same http request or across different http requests.
 builder.Services.AddTransient(_ => new MySqlDbConnection(StaticInfos.MySqlConnectionString));
 builder.Services.AddTransient(_ => new MsSqlDbConnection(StaticInfos.MsSqlConnectionString));
 builder.Services.AddTransient(_ => new PostGreSqlDbConnection(StaticInfos.PostgreSqlConnectionString));
+builder.Services.AddDbContext<NexKraftDbContext>(options => options.UseSqlServer(StaticInfos.MsSqlConnectionString));
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // Add services to the container.
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+//Configure In Memory Cache
+builder.Services.AddMemoryCache();
+
+//Configure Response Caching
+builder.Services.AddResponseCaching(options =>
+{
+    //Cache responses with a body size smaller than or equal to 1,024 bytes.
+    options.MaximumBodySize = 1024;
+    //Store the responses by case-sensitive paths.
+    //For example, /page1 and /Page1 are stored separately.
+    options.UseCaseSensitivePaths = true;
+});
 
 //Register All services
 RegisteredServices.Register(builder);
@@ -45,11 +66,30 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.UseRouting();
+
+//UseCors must be called before UseResponseCaching
 app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+
+app.UseResponseCaching();
+app.Use(async (context, next) =>
+{
+    context.Response.GetTypedHeaders().CacheControl =
+        new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
+        {
+            Public = true,
+            MaxAge = TimeSpan.FromSeconds(10)
+        };
+    context.Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.Vary] =
+        new string[] { "Accept-Encoding" };
+
+    await next();
+});
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
 //Uncomment below for index.html
 //DefaultFilesOptions options = new DefaultFilesOptions();
 //options.DefaultFileNames.Clear();

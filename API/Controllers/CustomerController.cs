@@ -6,6 +6,7 @@ using API.Filters;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 
 namespace API.Controllers
@@ -14,19 +15,32 @@ namespace API.Controllers
     [ApiController]
     public class CustomerController : ControllerBase
     {
-        private readonly ICustomerServices serivce;
-        public CustomerController(ICustomerServices _serivce)
+        private readonly ICustomerServices serivce; private readonly IMemoryCache memoryCache;
+        public CustomerController(ICustomerServices _serivce, IMemoryCache memoryCache)
         {
             serivce = _serivce;
+            this.memoryCache = memoryCache;
         }
         
-        [HttpGet("[action]"), Authorizations]
+        [HttpGet("[action]")]//Authorizations        
         public async Task<object?> GetCustomerList([FromQuery] CustomerData param)
         {
             object? data = null;
             try
             {
-                data = await serivce.GetCustomerList(param);
+                //DateTime currentTime;
+                bool isExist = memoryCache.TryGetValue("CacheTime", out data);
+                if (!isExist)
+                {
+                    //currentTime = DateTime.Now;
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetSlidingExpiration(TimeSpan.FromMilliseconds(30));
+
+                    data = await serivce.GetCustomerList(param);
+
+                    memoryCache.Set("CacheTime", data, cacheEntryOptions);
+                }
+               
             }
             catch (Exception ex)
             {
@@ -38,7 +52,7 @@ namespace API.Controllers
             };
         }
        
-        [HttpGet("[action]"), Authorizations]
+        [HttpGet("[action]")]//, Authorizations
         public async Task<object?> GetCustomerByCustomerID([FromQuery] int id)
         {
             object? data = null;
@@ -57,7 +71,7 @@ namespace API.Controllers
             return data;
         }
        
-        [HttpPost("[action]"), Authorizations]
+        [HttpPost("[action]")]//, Authorizations
         public async Task<object?> CreateCustomer([FromBody] CreateCustomerModel data)
         {
             object? resdata = null;
@@ -74,7 +88,7 @@ namespace API.Controllers
 
         }
         
-        [HttpPut("[action]"), Authorizations]
+        [HttpPut("[action]")]//, Authorizations
         public async Task<object?> UpdateCustomer([FromBody] vmCustomerUpdate data)
         {
             object? resdata = null;
@@ -89,7 +103,7 @@ namespace API.Controllers
             return resdata;
         }
         
-        [HttpDelete("[action]"), Authorizations]
+        [HttpDelete("[action]")]//, Authorizations
         public async Task<object?> DeleteCustomer([FromQuery] int id)
         {
             object? resdata = null;
